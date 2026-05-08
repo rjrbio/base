@@ -1,81 +1,122 @@
-# Cero
+# Projects Showcase
 
-Proyecto base **vacío** preparado para construir software con un flujo de trabajo asistido por agentes de IA. Compatible con GitHub Copilot CLI, Claude Code, Cursor, Codex, Aider y cualquier herramienta que entienda el [estándar AGENTS.md](https://agents.md).
+Sitio web animado de presentación de proyectos. Single-page con scroll storytelling, fondos WebGL (shaders + sistema de partículas), tipografía display protagonista y un CTA final que dirige al portfolio principal en [`https://jdev.alwaysdata.net`](https://jdev.alwaysdata.net).
 
-## ¿Qué es esto?
+> Este sitio se construyó sobre la plantilla de agentes de IA descrita en [`AGENTS.md`](AGENTS.md). El pipeline `product-analyst → architect → frontend-developer → qa-tester → styles-designer` generó la spec, la arquitectura y la implementación a partir de una sola idea inicial.
 
-Un punto de partida limpio que **no impone stack**: ni lenguaje, ni framework, ni base de datos. Solo aporta:
+## Qué muestra
 
-- Un sistema de **roles/agentes** con responsabilidades claras (`agents/`).
-- **Reglas globales** del proyecto (`rules/`).
-- Un **pipeline de trabajo** definido para que cualquier herramienta de IA lo siga.
+Tres proyectos, cada uno con su propio acento cromático y narrativa:
 
-El stack y la estructura los decides tú al empezar el primer feature.
+| #   | Proyecto                  | Qué es                                                                                                                              |
+| --- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Lore Master Assistant** | RAG fullstack de propósito general sobre MongoDB Atlas Vector Search. Ingiere URLs y archivos (TXT/MD/PDF/DOCX); responde con cita. |
+| 2   | **Rule The Mando**        | Plataforma de descubrimiento, clasificación y comunidad sobre videojuegos. Autenticación con Supabase.                              |
+| 3   | **Kintsugi: The Fall**    | Videojuego JRPG por turnos con timing activo, en desarrollo. Sección protagónica del scroll.                                        |
+
+## Stack
+
+- **Astro 6** (output 100 % estático) + TypeScript estricto.
+- **Three.js** para el shader unificado y el sistema de partículas (un único contexto WebGL).
+- **GSAP / ScrollTrigger** para scroll-pinning y title reveals.
+- **Lenis** para smooth scroll.
+- **MDX** para el contenido por proyecto.
+- **CSS nativo** con variables y tokens (sin framework de estilos).
+- **Vitest** + **Playwright** para tests.
+
+Detalle completo y convenciones en [`STACK.md`](STACK.md).
+
+## Cómo correrlo
+
+Requisitos: Node ≥ 20 y pnpm.
+
+```bash
+pnpm install
+pnpm dev               # http://localhost:4321
+pnpm build && pnpm preview
+```
+
+Verificación:
+
+```bash
+pnpm lint
+pnpm typecheck
+pnpm test              # Vitest (unit)
+pnpm test:e2e          # Playwright (la primera vez: pnpm exec playwright install chromium)
+```
 
 ## Estructura
 
 ```
 .
-├── AGENTS.md                       Instrucciones primarias (estándar abierto)
-├── README.md                       Este archivo
-├── tutorial.md                     Walkthrough con prompts paso a paso
-├── .gitignore
-├── .github/
-│   ├── copilot-instructions.md     Apunta a AGENTS.md (Copilot CLI/IDE)
-│   └── agents/                     Wrappers nativos para Copilot CLI
-│       ├── product-analyst.agent.md
-│       ├── architect.agent.md
-│       ├── backend-developer.agent.md
-│       ├── frontend-developer.agent.md
-│       ├── qa-tester.agent.md
-│       └── styles-designer.agent.md
-├── agents/                         Prompts de cada rol (fuente única)
-│   ├── product-analyst.md
-│   ├── architect.md
-│   ├── backend-developer.md
-│   ├── frontend-developer.md
-│   ├── qa-tester.md
-│   └── styles-designer.md
-└── rules/                          Reglas globales
-    ├── agent-rules.md
-    └── git-workflow.md
+├── AGENTS.md                  Plantilla de agentes IA (pipeline)
+├── BRAND.md                   Sistema visual (paleta, tipografía, reglas)
+├── STACK.md                   Stack y convenciones
+├── specs/
+│   └── projects-showcase.md   Spec funcional + arquitectura técnica
+├── agents/                    Prompts de cada rol (product-analyst, architect, …)
+├── rules/                     Reglas globales del flujo
+├── .claude/agents/            Wrappers nativos para Claude Code
+├── src/
+│   ├── components/{audio,background,cta,footer,hero,project}/
+│   ├── content/               MDX por proyecto
+│   ├── layouts/BaseLayout.astro
+│   ├── lib/
+│   │   ├── audio/AudioManager.ts
+│   │   ├── scroll/ScrollOrchestrator.ts
+│   │   ├── three/BackgroundManager.ts
+│   │   └── shaders/           GLSL en strings TS
+│   ├── pages/index.astro
+│   └── styles/{tokens,reset,globals}.css
+├── public/{audio,fonts,media}/
+├── media/projects/<slug>/     Sources sin optimizar (capturas, GIFs, logos)
+└── tests/{unit,e2e}/
 ```
 
-Los wrappers en `.github/agents/*.agent.md` son cortos y delegan a los archivos de `agents/` — la fuente única es `agents/`. Editar ahí actualiza todas las herramientas a la vez.
+## Características
 
-## Cómo arrancar un proyecto nuevo
+- **Modo oscuro fijo**, mobile-first, responsive con `clamp()` para tipografía.
+- **5 presets de fondo** (hero, lore, mando, kintsugi, cta) con interpolación suave entre secciones según `IntersectionObserver`.
+- **Title reveals** con stagger (GSAP) sobre todo elemento `[data-reveal="title"]`.
+- **12 anclas `data-pinning-id`** una por sub-sección — base para futuros pins más agresivos.
+- **Pausa total** de la animación cuando la pestaña no es visible (`visibilitychange`).
+- **Fallback CSS** con gradientes radiales si el navegador no soporta WebGL.
+- **`prefers-reduced-motion`** desactiva animaciones, partículas y shader temporal.
+- **Audio toggle** sticky bottom-right con persistencia en `localStorage`; disabled hasta que la pista exista.
+- **Accesibilidad**: HTML semántico, focus visible, navegación por teclado, `alt` descriptivos, contraste WCAG AA.
 
-> 🎯 **Si es tu primera vez, abre [`tutorial.md`](tutorial.md)** — tiene los prompts paso a paso, sugerencias para mejor calidad, errores comunes y un ejemplo completo end-to-end.
+## Tests
 
-Abre tu CLI de IA en este directorio y dile:
+- **14 tests E2E** (Playwright) cubren render, semántica, accesibilidad, scope negativo (sin contact/forms/redes), navegación por teclado, scroll completo y `prefers-reduced-motion`.
+- **2 tests unitarios** (Vitest) sobre el `AudioManager`.
 
-> "Quiero construir <una app que…>. Sigue el pipeline definido en AGENTS.md."
+```bash
+pnpm test && pnpm test:e2e
+```
 
-El **product-analyst** te hará preguntas; el **architect** propondrá stack; los developers implementan; el qa-tester verifica.
+## Assets pendientes
 
-## Pipeline resumido
+Para producción final hace falta aportar:
+
+- **`media/projects/<slug>/`** — capturas, GIFs y logos por proyecto. Recomendaciones de formato en [`media/README.md`](media/README.md).
+- **`public/audio/ambient.mp3`** — pista ambient (loop limpio, ≤ 500 KB). En cuanto exista, el toggle de audio se habilita automáticamente.
+
+Mientras tanto, las sub-secciones muestran un `[ asset-placeholder ]` con texto descriptivo que se sustituye por la captura/GIF real cuando se incorpora.
+
+## Sistema de agentes
+
+El repositorio sigue siendo reutilizable como base: el sistema de roles en `agents/` y las reglas en `rules/` aplican a cualquier feature futura. Para añadir una pieza nueva, sigue el pipeline secuencial:
 
 ```
-product-analyst → architect → backend-dev → qa-tester (backend) → frontend-dev → qa-tester (frontend)
+product-analyst → architect → backend-dev (si aplica) → qa-tester → frontend-dev → qa-tester
 ```
 
-Secuencial, no paralelo. El usuario aprueba cada paso antes de avanzar.
-
-## Personalización por herramienta
-
-| Herramienta                 | Estado                                                                             |
-| --------------------------- | ---------------------------------------------------------------------------------- |
-| GitHub Copilot CLI          | ✅ Configurado de fábrica en `.github/agents/*.agent.md`                           |
-| Claude Code                 | Crea `.claude/agents/<nombre>.md` con frontmatter Claude (no incluido por defecto) |
-| Cursor                      | Configura modos que apunten a `agents/<nombre>.md`                                 |
-| Codex / Aider / Zed / otros | Leen `AGENTS.md` automáticamente                                                   |
-
-Los archivos de `agents/` son la **fuente única**: los wrappers nativos solo apuntan a ellos.
+Cada paso requiere aprobación antes de avanzar. Detalle en [`AGENTS.md`](AGENTS.md). Con Claude Code, los wrappers en `.claude/agents/` invocan cada rol con `/agents`.
 
 ## Idioma
 
-Documentación, specs y commits en español. Código (identificadores, comentarios técnicos) en inglés.
+Documentación, specs y commits en **español**. Código (identificadores, comentarios técnicos) y contenido del sitio en **inglés**.
 
 ## Licencia
 
-Define la licencia del proyecto cuando arranques uno real (este repo base no fija ninguna).
+Pendiente de definir antes de publicar.
