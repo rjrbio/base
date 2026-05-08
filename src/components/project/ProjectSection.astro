@@ -16,7 +16,7 @@ const { slug, title, tagline, palette = 'p1' } = Astro.props;
   data-project={slug}
 >
   <header class="project__header">
-    <h2 id={`${slug}-title`} class="project__title">{title}</h2>
+    <h2 id={`${slug}-title`} class="project__title" data-reveal="title">{title}</h2>
     <p class="project__tagline">{tagline}</p>
   </header>
 

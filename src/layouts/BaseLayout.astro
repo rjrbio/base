@@ -25,5 +25,9 @@ const {
   </head>
   <body>
     <slot />
+    <script>
+      import { initScroll } from '../lib/scroll/ScrollOrchestrator';
+      initScroll();
+    </script>
   </body>
 </html>
