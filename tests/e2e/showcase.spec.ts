@@ -68,8 +68,13 @@ test.describe('Projects Showcase', () => {
 
   test('logs no console errors after navigationIdle', async ({ page }) => {
     const errors: string[] = [];
+    page.on('pageerror', (err) => errors.push(`pageerror: ${err.message}`));
     page.on('console', (msg) => {
-      if (msg.type() === 'error') errors.push(msg.text());
+      if (msg.type() !== 'error') return;
+      const text = msg.text();
+      // 404s for asset probes (audio pending until assets ship) are expected.
+      if (/Failed to load resource.*404/i.test(text)) return;
+      errors.push(text);
     });
     await page.goto('/');
     await page.waitForLoadState('networkidle');

@@ -1,0 +1,143 @@
+---
+
+---
+
+<button
+  class="audio-toggle"
+  type="button"
+  data-audio-toggle
+  aria-pressed="false"
+  aria-label="Audio not available yet"
+  disabled
+>
+  <span class="audio-toggle__icon" aria-hidden="true">
+    <span class="audio-toggle__bar"></span>
+    <span class="audio-toggle__bar"></span>
+    <span class="audio-toggle__bar"></span>
+  </span>
+  <span class="audio-toggle__label">audio</span>
+</button>
+
+<script>
+  import { getAudioState, initAudio, subscribeAudio } from '../../lib/audio/AudioManager';
+
+  const button = document.querySelector<HTMLButtonElement>('[data-audio-toggle]');
+  if (button) {
+    button.addEventListener('click', () => {
+      getAudioState().toggle();
+    });
+
+    subscribeAudio((state) => {
+      button.disabled = !state.available;
+      button.setAttribute(
+        'aria-label',
+        state.available
+          ? state.enabled
+            ? 'Mute ambient audio'
+            : 'Play ambient audio'
+          : 'Audio not available yet',
+      );
+      if (state.available) {
+        button.setAttribute('aria-pressed', String(state.enabled));
+      }
+      button.classList.toggle('audio-toggle--on', state.enabled);
+    });
+
+    void initAudio();
+  }
+</script>
+
+<style>
+  .audio-toggle {
+    position: fixed;
+    right: var(--sp-3);
+    bottom: var(--sp-3);
+    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+    padding: var(--sp-1) var(--sp-2);
+    background: color-mix(in srgb, var(--bg) 80%, transparent);
+    border: 1px solid color-mix(in srgb, var(--fg) 14%, transparent);
+    border-radius: 999px;
+    backdrop-filter: blur(8px);
+    color: var(--fg-muted);
+    font: inherit;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+      color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
+  }
+
+  .audio-toggle:hover,
+  .audio-toggle:focus-visible {
+    color: var(--fg);
+    border-color: color-mix(in srgb, var(--fg) 30%, transparent);
+  }
+
+  .audio-toggle:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .audio-toggle:disabled:hover,
+  .audio-toggle:disabled:focus-visible {
+    color: var(--fg-muted);
+    border-color: color-mix(in srgb, var(--fg) 14%, transparent);
+  }
+
+  .audio-toggle--on {
+    color: var(--fg);
+  }
+
+  .audio-toggle__icon {
+    display: inline-flex;
+    align-items: end;
+    gap: 2px;
+    height: 12px;
+  }
+
+  .audio-toggle__bar {
+    display: block;
+    width: 2px;
+    height: 30%;
+    background: currentColor;
+    transition: height var(--dur-fast) var(--ease-out);
+  }
+
+  .audio-toggle__bar:nth-child(2) {
+    height: 60%;
+  }
+  .audio-toggle__bar:nth-child(3) {
+    height: 40%;
+  }
+
+  .audio-toggle--on .audio-toggle__bar {
+    animation: audio-bar 1s ease-in-out infinite;
+  }
+  .audio-toggle--on .audio-toggle__bar:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  .audio-toggle--on .audio-toggle__bar:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes audio-bar {
+    0%,
+    100% {
+      height: 30%;
+    }
+    50% {
+      height: 90%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .audio-toggle--on .audio-toggle__bar {
+      animation: none;
+    }
+  }
+</style>

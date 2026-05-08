@@ -2,6 +2,7 @@
 import '../styles/reset.css';
 import '../styles/tokens.css';
 import '../styles/globals.css';
+import AudioToggle from '../components/audio/AudioToggle.astro';
 
 interface Props {
   title?: string;
@@ -26,6 +27,7 @@ const {
   <body>
     <canvas class="background-canvas" data-background-canvas aria-hidden="true"></canvas>
     <slot />
+    <AudioToggle />
     <script>
       import { initBackground } from '../lib/three/BackgroundManager';
       import { initScroll } from '../lib/scroll/ScrollOrchestrator';
