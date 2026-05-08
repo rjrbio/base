@@ -1,20 +1,83 @@
 ---
-import '../styles/reset.css';
-import '../styles/tokens.css';
-import '../styles/globals.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/hero/Hero.astro';
+import Footer from '../components/footer/Footer.astro';
+import PortfolioCTA from '../components/cta/PortfolioCTA.astro';
+
+const projects = [
+  {
+    slug: 'lore-master-assistant',
+    title: 'Lore Master Assistant',
+    tagline: 'General-purpose RAG. Ingest URLs and files. Ask anything.',
+  },
+  {
+    slug: 'rule-the-mando',
+    title: 'Rule The Mando',
+    tagline: 'Discover, classify and own your video game collection.',
+  },
+  {
+    slug: 'kintsugi-the-fall',
+    title: 'Kintsugi: The Fall',
+    tagline: 'The battle was lost. The world is broken. You are what comes after.',
+  },
+];
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Projects Showcase</title>
-  </head>
-  <body>
-    <main>
-      <h1>Projects Showcase</h1>
-      <p>Scaffold inicial. Las secciones llegan en la Fase 1.</p>
-    </main>
-  </body>
-</html>
+<BaseLayout>
+  <main>
+    <Hero />
+
+    {
+      projects.map(({ slug, title, tagline }) => (
+        <section id={slug} class="project-placeholder" aria-labelledby={`${slug}-title`}>
+          <h2 id={`${slug}-title`}>{title}</h2>
+          <p class="project-placeholder__tagline">{tagline}</p>
+          <p class="project-placeholder__note">Phase 2 placeholder — full content coming.</p>
+        </section>
+      ))
+    }
+
+    <PortfolioCTA />
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .project-placeholder {
+    min-height: 60svh;
+    display: grid;
+    grid-template-rows: auto auto auto;
+    align-content: center;
+    gap: var(--sp-3);
+    padding: var(--sp-8) var(--sp-4);
+    border-top: 1px solid color-mix(in srgb, var(--fg) 6%, transparent);
+  }
+
+  .project-placeholder h2 {
+    margin: 0;
+    font-size: var(--fs-h1);
+    font-weight: 700;
+  }
+
+  .project-placeholder__tagline {
+    max-width: 50ch;
+    margin: 0;
+    color: var(--fg-muted);
+    font-size: var(--fs-body);
+  }
+
+  .project-placeholder__note {
+    margin: 0;
+    color: var(--fg-muted);
+    font-size: 0.875rem;
+    font-style: italic;
+    opacity: 0.6;
+  }
+
+  @media (max-width: 768px) {
+    .project-placeholder {
+      padding: var(--sp-6) var(--sp-3);
+    }
+  }
+</style>

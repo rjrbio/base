@@ -1,0 +1,29 @@
+---
+import '../styles/reset.css';
+import '../styles/tokens.css';
+import '../styles/globals.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Projects Showcase',
+  description = 'Built from curiosity. Lore Master Assistant, Rule The Mando, Kintsugi: The Fall.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

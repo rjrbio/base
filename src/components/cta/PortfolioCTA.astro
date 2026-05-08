@@ -1,0 +1,71 @@
+---
+const headline = 'If you want to know more about me';
+const ctaLabel = 'See more work';
+const portfolioUrl = 'https://jdev.alwaysdata.net';
+---
+
+<section class="cta" aria-labelledby="cta-headline">
+  <h2 id="cta-headline" class="cta__headline">{headline}</h2>
+  <a class="cta__link" href={portfolioUrl} target="_blank" rel="noopener noreferrer">
+    {ctaLabel}
+    <span class="cta__arrow" aria-hidden="true">→</span>
+  </a>
+</section>
+
+<style>
+  .cta {
+    min-height: 80svh;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    align-items: center;
+    padding: var(--sp-12) var(--sp-4);
+    text-align: center;
+  }
+
+  .cta__headline {
+    justify-self: center;
+    max-width: 22ch;
+    margin: 0;
+    font-size: var(--fs-display-l);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .cta__link {
+    justify-self: center;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-top: var(--sp-8);
+    padding-bottom: var(--sp-1);
+    border-bottom: 2px solid var(--fg);
+    color: var(--fg);
+    font-size: var(--fs-h1);
+    font-weight: 600;
+    transition:
+      color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
+  }
+
+  .cta__link:hover,
+  .cta__link:focus-visible {
+    color: var(--p3);
+    border-color: var(--p3);
+  }
+
+  .cta__arrow {
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+
+  .cta__link:hover .cta__arrow,
+  .cta__link:focus-visible .cta__arrow {
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 768px) {
+    .cta {
+      padding: var(--sp-8) var(--sp-3);
+    }
+  }
+</style>

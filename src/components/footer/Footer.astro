@@ -1,0 +1,41 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <p class="footer__attribution">
+    © {year}
+    <a
+      class="footer__link"
+      href="https://github.com/rjrbio"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      rjrbio
+    </a>
+  </p>
+</footer>
+
+<style>
+  .footer {
+    padding: var(--sp-6) var(--sp-4);
+    border-top: 1px solid color-mix(in srgb, var(--fg) 8%, transparent);
+  }
+
+  .footer__attribution {
+    margin: 0;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--fg-muted);
+  }
+
+  .footer__link {
+    color: var(--fg);
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .footer__link:hover,
+  .footer__link:focus-visible {
+    color: var(--p3);
+  }
+</style>
