@@ -3,11 +3,14 @@
   --bg: #07060a;
   --fg: #f4f1ea;
   --fg-muted: #aaa3a0;
-  --p1: #5b6cff; /* lore: cool blue/violet */
-  --p2: #ff7a3d; /* mando: warm amber */
+  --p1: #5b6cff; /* lore: cool electric blue/violet */
+  --p2: #ff7a3d; /* mando: warm copper */
   --p3: #d4a64a; /* kintsugi: gold */
 
-  /* Type scale (clamp para responsive) */
+  /* Type */
+  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
   --fs-display-xl: clamp(4rem, 12vw, 11rem);
   --fs-display-l: clamp(3rem, 8vw, 7rem);
   --fs-h1: clamp(2rem, 5vw, 3.5rem);
