@@ -3,81 +3,46 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/hero/Hero.astro';
 import Footer from '../components/footer/Footer.astro';
 import PortfolioCTA from '../components/cta/PortfolioCTA.astro';
+import ProjectSection from '../components/project/ProjectSection.astro';
 
-const projects = [
-  {
-    slug: 'lore-master-assistant',
-    title: 'Lore Master Assistant',
-    tagline: 'General-purpose RAG. Ingest URLs and files. Ask anything.',
-  },
-  {
-    slug: 'rule-the-mando',
-    title: 'Rule The Mando',
-    tagline: 'Discover, classify and own your video game collection.',
-  },
-  {
-    slug: 'kintsugi-the-fall',
-    title: 'Kintsugi: The Fall',
-    tagline: 'The battle was lost. The world is broken. You are what comes after.',
-  },
-];
+import LoreContent, { frontmatter as loreFM } from '../content/lore-master-assistant.mdx';
+import MandoContent, { frontmatter as mandoFM } from '../content/rule-the-mando.mdx';
+import KintsugiContent, { frontmatter as kintsugiFM } from '../content/kintsugi-the-fall.mdx';
 ---
 
 <BaseLayout>
   <main>
     <Hero />
 
-    {
-      projects.map(({ slug, title, tagline }) => (
-        <section id={slug} class="project-placeholder" aria-labelledby={`${slug}-title`}>
-          <h2 id={`${slug}-title`}>{title}</h2>
-          <p class="project-placeholder__tagline">{tagline}</p>
-          <p class="project-placeholder__note">Phase 2 placeholder — full content coming.</p>
-        </section>
-      ))
-    }
+    <ProjectSection
+      slug={loreFM.slug}
+      title={loreFM.title}
+      tagline={loreFM.tagline}
+      palette={loreFM.palette}
+    >
+      <LoreContent />
+    </ProjectSection>
+
+    <ProjectSection
+      slug={mandoFM.slug}
+      title={mandoFM.title}
+      tagline={mandoFM.tagline}
+      palette={mandoFM.palette}
+    >
+      <MandoContent />
+    </ProjectSection>
+
+    <ProjectSection
+      slug={kintsugiFM.slug}
+      title={kintsugiFM.title}
+      tagline={kintsugiFM.tagline}
+      palette={kintsugiFM.palette}
+    >
+      <KintsugiContent />
+    </ProjectSection>
 
     <PortfolioCTA />
   </main>
 
   <Footer />
 </BaseLayout>
-
-<style>
-  .project-placeholder {
-    min-height: 60svh;
-    display: grid;
-    grid-template-rows: auto auto auto;
-    align-content: center;
-    gap: var(--sp-3);
-    padding: var(--sp-8) var(--sp-4);
-    border-top: 1px solid color-mix(in srgb, var(--fg) 6%, transparent);
-  }
-
-  .project-placeholder h2 {
-    margin: 0;
-    font-size: var(--fs-h1);
-    font-weight: 700;
-  }
-
-  .project-placeholder__tagline {
-    max-width: 50ch;
-    margin: 0;
-    color: var(--fg-muted);
-    font-size: var(--fs-body);
-  }
-
-  .project-placeholder__note {
-    margin: 0;
-    color: var(--fg-muted);
-    font-size: 0.875rem;
-    font-style: italic;
-    opacity: 0.6;
-  }
-
-  @media (max-width: 768px) {
-    .project-placeholder {
-      padding: var(--sp-6) var(--sp-3);
-    }
-  }
-</style>

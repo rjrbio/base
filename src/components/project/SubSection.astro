@@ -1,0 +1,60 @@
+---
+interface Props {
+  id: string;
+  label?: string;
+}
+
+const { id, label } = Astro.props;
+---
+
+<article class="subsection" data-pinning-id={id}>
+  {label && <h3 class="subsection__label">{label}</h3>}
+  <div class="subsection__content">
+    <slot />
+  </div>
+</article>
+
+<style>
+  .subsection {
+    display: grid;
+    gap: var(--sp-4);
+    max-width: 80ch;
+  }
+
+  .subsection__label {
+    margin: 0;
+    color: var(--project-accent, var(--fg-muted));
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+  }
+
+  .subsection__content {
+    display: grid;
+    gap: var(--sp-3);
+  }
+
+  .subsection__content :global(p) {
+    margin: 0;
+    max-width: 65ch;
+    color: var(--fg);
+    font-size: var(--fs-body);
+    line-height: 1.7;
+  }
+
+  .subsection__content :global(.asset-placeholder) {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    padding: var(--sp-4);
+    background: color-mix(in srgb, var(--fg) 4%, var(--bg));
+    border: 1px dashed color-mix(in srgb, var(--fg) 14%, transparent);
+    border-radius: 4px;
+    color: var(--fg-muted);
+    font-size: 0.875rem;
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+</style>

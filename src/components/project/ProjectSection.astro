@@ -1,0 +1,86 @@
+---
+interface Props {
+  slug: string;
+  title: string;
+  tagline: string;
+  palette?: string;
+}
+
+const { slug, title, tagline, palette = 'p1' } = Astro.props;
+---
+
+<section
+  id={slug}
+  class={`project project--${palette}`}
+  aria-labelledby={`${slug}-title`}
+  data-project={slug}
+>
+  <header class="project__header">
+    <h2 id={`${slug}-title`} class="project__title">{title}</h2>
+    <p class="project__tagline">{tagline}</p>
+  </header>
+
+  <div class="project__body">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .project {
+    --project-accent: var(--p1);
+    border-top: 1px solid color-mix(in srgb, var(--fg) 6%, transparent);
+  }
+
+  .project--p1 {
+    --project-accent: var(--p1);
+  }
+  .project--p2 {
+    --project-accent: var(--p2);
+  }
+  .project--p3 {
+    --project-accent: var(--p3);
+  }
+
+  .project__header {
+    min-height: 80svh;
+    display: grid;
+    align-content: center;
+    gap: var(--sp-3);
+    padding: var(--sp-12) var(--sp-4);
+  }
+
+  .project__title {
+    margin: 0;
+    color: var(--fg);
+    font-size: var(--fs-display-l);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+  }
+
+  .project__tagline {
+    max-width: 50ch;
+    margin: 0;
+    color: var(--project-accent);
+    font-size: var(--fs-h1);
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  .project__body {
+    display: grid;
+    gap: var(--sp-12);
+    padding: 0 var(--sp-4) var(--sp-12);
+  }
+
+  @media (max-width: 768px) {
+    .project__header {
+      padding: var(--sp-8) var(--sp-3);
+    }
+
+    .project__body {
+      padding: 0 var(--sp-3) var(--sp-8);
+      gap: var(--sp-8);
+    }
+  }
+</style>
