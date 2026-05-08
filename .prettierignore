@@ -1,0 +1,16 @@
+# Sistema de agentes y plantilla (no formatear)
+AGENTS.md
+CLAUDE.md
+tutorial.md
+agents/
+rules/
+.github/
+
+# Generados / lockfiles
+node_modules/
+dist/
+.astro/
+pnpm-lock.yaml
+playwright-report/
+test-results/
+coverage/

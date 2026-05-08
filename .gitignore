@@ -13,3 +13,15 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Node
+node_modules/
+
+# Astro
+dist/
+.astro/
+
+# Tests
+playwright-report/
+test-results/
+coverage/

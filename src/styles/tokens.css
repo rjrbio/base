@@ -1,0 +1,30 @@
+:root {
+  /* Color */
+  --bg: #07060a;
+  --fg: #f4f1ea;
+  --fg-muted: #aaa3a0;
+  --p1: #5b6cff; /* lore: cool blue/violet */
+  --p2: #ff7a3d; /* mando: warm amber */
+  --p3: #d4a64a; /* kintsugi: gold */
+
+  /* Type scale (clamp para responsive) */
+  --fs-display-xl: clamp(4rem, 12vw, 11rem);
+  --fs-display-l: clamp(3rem, 8vw, 7rem);
+  --fs-h1: clamp(2rem, 5vw, 3.5rem);
+  --fs-body: clamp(1rem, 1.1vw, 1.125rem);
+
+  /* Spacing (8px base) */
+  --sp-1: 0.5rem;
+  --sp-2: 1rem;
+  --sp-3: 1.5rem;
+  --sp-4: 2rem;
+  --sp-6: 3rem;
+  --sp-8: 4rem;
+  --sp-12: 6rem;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.2, 0.6, 0.2, 1);
+  --dur-fast: 200ms;
+  --dur-mid: 500ms;
+  --dur-slow: 1200ms;
+}
