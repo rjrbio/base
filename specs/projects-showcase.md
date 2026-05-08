@@ -30,7 +30,7 @@
 
 ### No incluye
 
-- Sección de contacto, formularios o redes sociales propias.
+- Sección de contacto, formularios o lista de perfiles sociales (el footer incluye únicamente atribución de autoría con enlace a GitHub).
 - Sección "About me" con datos personales.
 - Multilingüe.
 - Modo claro / toggle de tema.
@@ -135,7 +135,7 @@ Cada proyecto sigue la misma plantilla visual base, con paleta, efecto y narrati
   4. *22 heroes* — visualización de los hasta 22 héroes, cada uno arraigado a su pueblo natal.
   5. *Your order* — liberar las ciudades en el orden que elijas.
   6. *Won't fully mend* — el mundo nunca se reparará por completo (eco del concepto kintsugi: las grietas doradas).
-  7. *Status* — etapa actual de desarrollo + (si existe) link a devlog/teaser.
+  7. *Status* — etiqueta `in development` (sin link a devlog/teaser; no existe público a la fecha de esta spec). Espacio reservado para texto extendido con detalles narrativos/mecánicos si se decide ampliar en implementación.
 - **Contenido textual a transmitir**:
   - Premisa narrativa (derrota inicial, mundo roto).
   - Mecánica: JRPG por turnos con timing activo.
@@ -152,8 +152,8 @@ Cada proyecto sigue la misma plantilla visual base, con paleta, efecto y narrati
 
 #### Footer
 
-- Mínimo. Por defecto: `© <año>` sin más identificación personal (consistente con la decisión de no exponer datos personales fuera del portfolio).
-- Sin enlaces a redes sociales.
+- Mínimo: `© rjrbio` con enlace a `https://github.com/rjrbio` (atribución de autoría).
+- Sin otros enlaces a redes sociales ni información de contacto.
 
 #### Audio
 
@@ -194,7 +194,8 @@ Cada proyecto sigue la misma plantilla visual base, con paleta, efecto y narrati
 ## Datos esperados / contenido
 
 - 3 proyectos, cada uno con: nombre, tagline, paleta sugerida, 3–4 párrafos de texto.
-- 1 enlace externo (portfolio): `https://jdev.alwaysdata.net`.
+- 1 enlace externo principal (CTA al portfolio): `https://jdev.alwaysdata.net`.
+- 1 enlace externo en el footer (atribución a GitHub): `https://github.com/rjrbio`.
 - Pistas de audio (1 ambient + 2-3 microsonidos).
 
 Los assets visuales se almacenan en `media/projects/<slug>/`. La estructura inicial está creada con un `media/README.md` que documenta qué meter en cada subcarpeta. El contenido textual final lo redacta el frontend-developer en MD/MDX a partir de los datos de esta spec; el architect decidirá si el contenido vive en código o en archivos separados según el stack que proponga.
@@ -205,7 +206,7 @@ Los assets visuales se almacenan en `media/projects/<slug>/`. La estructura inic
 
 - **Given** un visitante carga `/` por primera vez en desktop, **When** la página termina de cargar, **Then** ve un hero a pantalla completa con shader animado de fondo y un texto display visible sin necesidad de scroll.
 - **Given** un visitante hace scroll desde el hero, **When** llega a cada sección de proyecto, **Then** ve título → assets visuales → texto explicativo en ese orden, con la sección anclada al viewport durante su animación principal.
-- **Given** un visitante recorre toda la página, **When** llega al final, **Then** ve un CTA que enlaza a `https://jdev.alwaysdata.net` y un footer mínimo, sin sección de contacto, sin formularios y sin enlaces a redes sociales personales.
+- **Given** un visitante recorre toda la página, **When** llega al final, **Then** ve un CTA que enlaza a `https://jdev.alwaysdata.net` y un footer con `© rjrbio` enlazando a `https://github.com/rjrbio`, sin formularios ni sección de contacto.
 
 ### Animaciones
 
@@ -246,11 +247,9 @@ Los assets visuales se almacenan en `media/projects/<slug>/`. La estructura inic
 
 ### Preguntas abiertas (no bloquean entrega de spec)
 
-- Frase exacta del hero (a sugerir en la implementación).
-- Frase exacta del CTA (sugerencia inicial: `If you want to know more about me` → botón `See more work`).
-- Texto exacto del footer (por defecto: `© <año>` sin más).
-- ¿Existe teaser/devlog público de Kintsugi enlazable, o solo aparece como "in development"?
-- Selección final de display y de pista de audio ambient.
+- Frase exacta del hero (a sugerir por frontend-developer en una iteración previa a implementación).
+- Frase exacta del CTA (sugerencia inicial confirmada: `If you want to know more about me` → botón `See more work`).
+- Selección final de display y de pista de audio ambient (a proponer por frontend-developer/styles-designer).
 
 ## Métricas de éxito
 
