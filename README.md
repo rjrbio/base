@@ -63,12 +63,12 @@ Secuencial, no paralelo. El usuario aprueba cada paso antes de avanzar.
 
 ## Personalización por herramienta
 
-| Herramienta | Estado |
-|-------------|--------|
-| GitHub Copilot CLI | ✅ Configurado de fábrica en `.github/agents/*.agent.md` |
-| Claude Code | Crea `.claude/agents/<nombre>.md` con frontmatter Claude (no incluido por defecto) |
-| Cursor | Configura modos que apunten a `agents/<nombre>.md` |
-| Codex / Aider / Zed / otros | Leen `AGENTS.md` automáticamente |
+| Herramienta                 | Estado                                                                             |
+| --------------------------- | ---------------------------------------------------------------------------------- |
+| GitHub Copilot CLI          | ✅ Configurado de fábrica en `.github/agents/*.agent.md`                           |
+| Claude Code                 | Crea `.claude/agents/<nombre>.md` con frontmatter Claude (no incluido por defecto) |
+| Cursor                      | Configura modos que apunten a `agents/<nombre>.md`                                 |
+| Codex / Aider / Zed / otros | Leen `AGENTS.md` automáticamente                                                   |
 
 Los archivos de `agents/` son la **fuente única**: los wrappers nativos solo apuntan a ellos.
 

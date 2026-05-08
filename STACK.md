@@ -4,22 +4,22 @@ Stack confirmado el 2026-05-08. Aplica a todas las features del proyecto salvo d
 
 ## Runtime y framework
 
-- **Framework**: Astro 5 (output 100% estático, sin SSR).
+- **Framework**: Astro 6 (output 100% estático, sin SSR).
 - **Lenguaje**: TypeScript estricto (`strict: true`).
 - **Package manager**: pnpm (sugerido por velocidad y disco; npm/bun aceptables).
 - **Node**: ≥20 LTS.
 
 ## Librerías principales
 
-| Área | Librería | Por qué |
-|------|----------|---------|
-| 3D / shaders WebGL | Three.js | Estándar industrial, ecosystem grande, agnóstica al framework. |
-| Scroll & timeline | GSAP + ScrollTrigger | Estándar para scroll-pinning complejo y secuencias coordinadas. |
-| Smooth scroll | Lenis | Suaviza el scroll nativo respetando inertia y mobile. |
-| Contenido por proyecto | MDX (`@astrojs/mdx`) | Texto + componentes embebidos en archivos `.mdx`. |
-| Estilos | CSS nativo + variables CSS | Sin framework de estilos. Tokens en `:root`. |
-| Tests unitarios / componentes | Vitest + Testing Library | Integra natural con Vite (Astro). |
-| Tests E2E | Playwright | Cubre flujos completos y accesibilidad. |
+| Área                          | Librería                   | Por qué                                                         |
+| ----------------------------- | -------------------------- | --------------------------------------------------------------- |
+| 3D / shaders WebGL            | Three.js                   | Estándar industrial, ecosystem grande, agnóstica al framework.  |
+| Scroll & timeline             | GSAP + ScrollTrigger       | Estándar para scroll-pinning complejo y secuencias coordinadas. |
+| Smooth scroll                 | Lenis                      | Suaviza el scroll nativo respetando inertia y mobile.           |
+| Contenido por proyecto        | MDX (`@astrojs/mdx`)       | Texto + componentes embebidos en archivos `.mdx`.               |
+| Estilos                       | CSS nativo + variables CSS | Sin framework de estilos. Tokens en `:root`.                    |
+| Tests unitarios / componentes | Vitest + Testing Library   | Integra natural con Vite (Astro).                               |
+| Tests E2E                     | Playwright                 | Cubre flujos completos y accesibilidad.                         |
 
 ## Hosting
 
@@ -29,22 +29,26 @@ Stack confirmado el 2026-05-08. Aplica a todas las features del proyecto salvo d
 ## Convenciones
 
 ### Tipografías
+
 - Display: open-source con licencia **OFL/permisiva**. Candidatas iniciales: **Migra** (Velvetyne, OFL), **Bricolage Grotesque** (Google Fonts, OFL). Selección final por styles-designer.
 - Body: sans neutra, OFL — Inter, Geist o IBM Plex Sans.
 - Servidas desde `public/fonts/` con `@font-face` y `font-display: swap`.
 - Preload del peso clave del display en `<head>`.
 
 ### Assets
+
 - Imágenes: WebP/AVIF preferidos; PNG/JPG aceptados. Optimización en build.
 - Vídeos cortos: MP4 (H.264) o WebM, sin audio, ≤6 s, ≤2 MB.
 - Audio: MP3 (compatibilidad universal), <500 KB total combinado, lazy-loaded.
 
 ### Estilos
+
 - CSS modules + variables CSS en `src/styles/tokens.css`.
 - Sin framework de estilos (Tailwind, etc.) salvo decisión expresa.
 - Sistema de tokens formal lo definirá styles-designer en `BRAND.md` cuando toque.
 
 ### TypeScript
+
 - `strict: true`, `noUncheckedIndexedAccess: true`.
 - Sin `any` salvo justificación documentada.
 

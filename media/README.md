@@ -20,13 +20,13 @@ media/
 
 Por cada proyecto:
 
-| Archivo | Descripción |
-|---------|-------------|
-| `hero.<ext>` | Imagen/GIF principal del title reveal (opcional). |
-| `screen-01.<ext>` … `screen-N.<ext>` | Capturas en orden narrativo. |
-| `clip-01.<ext>` … `clip-N.<ext>` | GIFs/vídeos cortos de funcionamiento (preferir MP4/WebM sobre GIF si pesan). |
-| `logo.<ext>` | Logo si lo hay (SVG preferido). |
-| `palette.md` | Paleta sugerida (hex + nombre, opcional). |
+| Archivo                              | Descripción                                                                  |
+| ------------------------------------ | ---------------------------------------------------------------------------- |
+| `hero.<ext>`                         | Imagen/GIF principal del title reveal (opcional).                            |
+| `screen-01.<ext>` … `screen-N.<ext>` | Capturas en orden narrativo.                                                 |
+| `clip-01.<ext>` … `clip-N.<ext>`     | GIFs/vídeos cortos de funcionamiento (preferir MP4/WebM sobre GIF si pesan). |
+| `logo.<ext>`                         | Logo si lo hay (SVG preferido).                                              |
+| `palette.md`                         | Paleta sugerida (hex + nombre, opcional).                                    |
 
 Recomendaciones:
 
@@ -37,11 +37,11 @@ Recomendaciones:
 
 ### `audio/`
 
-| Archivo | Descripción |
-|---------|-------------|
-| `ambient.<ext>` | Pista de fondo en loop, volumen percibido bajo. |
-| `hover.<ext>` | Microsonido para hovers (~100–300 ms). |
-| `transition.<ext>` | Swoosh de cambio de sección (opcional). |
+| Archivo            | Descripción                                     |
+| ------------------ | ----------------------------------------------- |
+| `ambient.<ext>`    | Pista de fondo en loop, volumen percibido bajo. |
+| `hover.<ext>`      | Microsonido para hovers (~100–300 ms).          |
+| `transition.<ext>` | Swoosh de cambio de sección (opcional).         |
 
 Recomendaciones:
 

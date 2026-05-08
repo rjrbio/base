@@ -90,19 +90,19 @@ No aplica. Esta feature no tiene backend; el sitio es estático y los assets se 
 
 Cada proyecto sigue la misma plantilla visual base, con paleta, efecto y narrativa propios:
 
-1. *Title reveal* — el título emerge con tratamiento tipográfico/animado.
-2. *Sub-secciones temáticas* (2–5 según proyecto) con scroll-pinning.
-3. *Texto explicativo* (3–4 párrafos cortos en MD/MDX, redactados por el frontend-developer a partir de los datos de esta spec).
+1. _Title reveal_ — el título emerge con tratamiento tipográfico/animado.
+2. _Sub-secciones temáticas_ (2–5 según proyecto) con scroll-pinning.
+3. _Texto explicativo_ (3–4 párrafos cortos en MD/MDX, redactados por el frontend-developer a partir de los datos de esta spec).
 
 #### P1 — Lore Master Assistant
 
 - **Título mostrado**: `Lore Master Assistant`.
 - **Tagline sugerida**: `General-purpose RAG. Ingest URLs and files. Ask anything.` (afinable por frontend-developer).
 - **Sub-secciones**:
-  1. *Title reveal* (kerning animado, partículas reaccionando al texto).
-  2. *Concept* — visualización del flujo RAG (ingest → embeddings → vector search → answer).
-  3. *Sources & formats* — fuentes ingeribles (URL públicas, TXT, MD, PDF, DOCX).
-  4. *In action* — capturas/GIFs de la app respondiendo preguntas reales.
+  1. _Title reveal_ (kerning animado, partículas reaccionando al texto).
+  2. _Concept_ — visualización del flujo RAG (ingest → embeddings → vector search → answer).
+  3. _Sources & formats_ — fuentes ingeribles (URL públicas, TXT, MD, PDF, DOCX).
+  4. _In action_ — capturas/GIFs de la app respondiendo preguntas reales.
 - **Contenido textual a transmitir**:
   - Qué problema resuelve (acceso conversacional a conocimiento heterogéneo).
   - Cómo funciona (ingerir → indexar → preguntar).
@@ -114,28 +114,28 @@ Cada proyecto sigue la misma plantilla visual base, con paleta, efecto y narrati
 - **Título mostrado**: `Rule The Mando`.
 - **Tagline sugerida**: `Discover, classify and own your video game collection.`
 - **Sub-secciones**:
-  1. *Title reveal*.
-  2. *The catalog* — visualización del catálogo masivo (miles de juegos de los últimos 30 años).
-  3. *Make it yours* — favoritos, votos, comentarios.
-  4. *Community* — hint de comunidad e interacción social.
+  1. _Title reveal_.
+  2. _The catalog_ — visualización del catálogo masivo (miles de juegos de los últimos 30 años).
+  3. _Make it yours_ — favoritos, votos, comentarios.
+  4. _Community_ — hint de comunidad e interacción social.
 - **Contenido textual a transmitir**:
   - Qué problema resuelve (descubrir + clasificar + comunidad en un solo sitio).
   - Funcionalidad principal: catálogo, próximos lanzamientos, lista personal, votos, comentarios.
   - Tecnologías clave: autenticación con Supabase, base de datos masiva.
 - **Animación de fondo**: tonalidad cálida con guiño retrogaming-but-modern (rojo/ámbar o verde fósforo desaturado). Patrón de cuadrícula deformada o ondulación tipo CRT moderno.
 
-#### P3 — Kintsugi: The Fall *(sección protagónica, mayor extensión)*
+#### P3 — Kintsugi: The Fall _(sección protagónica, mayor extensión)_
 
 - **Título mostrado**: `Kintsugi: The Fall`.
 - **Tagline sugerida**: `The battle was lost. The world is broken. You are what comes after.`
 - **Sub-secciones**:
-  1. *Title reveal* — tratamiento cinematográfico (slow build, glitch tipográfico evocando "fractura").
-  2. *The fall* — la premisa: la batalla épica ya ocurrió y se perdió. Fondo evoca rotura.
-  3. *The broken world* — media nación caída, capital convertida en fortaleza enemiga.
-  4. *22 heroes* — visualización de los hasta 22 héroes, cada uno arraigado a su pueblo natal.
-  5. *Your order* — liberar las ciudades en el orden que elijas.
-  6. *Won't fully mend* — el mundo nunca se reparará por completo (eco del concepto kintsugi: las grietas doradas).
-  7. *Status* — etiqueta `in development` (sin link a devlog/teaser; no existe público a la fecha de esta spec). Espacio reservado para texto extendido con detalles narrativos/mecánicos si se decide ampliar en implementación.
+  1. _Title reveal_ — tratamiento cinematográfico (slow build, glitch tipográfico evocando "fractura").
+  2. _The fall_ — la premisa: la batalla épica ya ocurrió y se perdió. Fondo evoca rotura.
+  3. _The broken world_ — media nación caída, capital convertida en fortaleza enemiga.
+  4. _22 heroes_ — visualización de los hasta 22 héroes, cada uno arraigado a su pueblo natal.
+  5. _Your order_ — liberar las ciudades en el orden que elijas.
+  6. _Won't fully mend_ — el mundo nunca se reparará por completo (eco del concepto kintsugi: las grietas doradas).
+  7. _Status_ — etiqueta `in development` (sin link a devlog/teaser; no existe público a la fecha de esta spec). Espacio reservado para texto extendido con detalles narrativos/mecánicos si se decide ampliar en implementación.
 - **Contenido textual a transmitir**:
   - Premisa narrativa (derrota inicial, mundo roto).
   - Mecánica: JRPG por turnos con timing activo.
@@ -238,12 +238,12 @@ Los assets visuales se almacenan en `media/projects/<slug>/`. La estructura inic
 
 ### Riesgos
 
-- **Performance vs espectáculo.** Cargar shaders + partículas + audio en una sola página puede ser pesado. *Mitigación*: lazy load por sección, presupuesto de bundle estricto, fallbacks claros, code-splitting agresivo.
-- **Mobile degradation.** Simplificar demasiado las animaciones puede romper el efecto wow en móvil. *Mitigación*: tipografía y transiciones cuidadas en mobile pueden compensar la falta de shader.
-- **Asset readiness.** El usuario aún no entregó los assets de cada proyecto. Bloqueante para la implementación final del frontend. *Mitigación*: la estructura `media/projects/<slug>/` ya está creada; el architect puede planificar implementación con placeholders.
-- **Audio en navegadores estrictos.** Políticas de autoplay y reproducción cuando la pestaña no tiene foco. *Mitigación*: opt-in estricto y manejo explícito de errores de play.
-- **Tipografías.** Si la display elegida es comercial, hay coste/licencia. *Mitigación*: candidatas open-source (Migra, PP Neue Montreal, Editorial New u otras con licencia OFL/permisiva).
-- **Escalado del shader entre GPUs.** El efecto puede verse muy distinto en Apple Silicon vs Intel iGPU vs móviles. *Mitigación*: presupuesto de complejidad por shader, testing en hardware variado, perfilado en DevTools.
+- **Performance vs espectáculo.** Cargar shaders + partículas + audio en una sola página puede ser pesado. _Mitigación_: lazy load por sección, presupuesto de bundle estricto, fallbacks claros, code-splitting agresivo.
+- **Mobile degradation.** Simplificar demasiado las animaciones puede romper el efecto wow en móvil. _Mitigación_: tipografía y transiciones cuidadas en mobile pueden compensar la falta de shader.
+- **Asset readiness.** El usuario aún no entregó los assets de cada proyecto. Bloqueante para la implementación final del frontend. _Mitigación_: la estructura `media/projects/<slug>/` ya está creada; el architect puede planificar implementación con placeholders.
+- **Audio en navegadores estrictos.** Políticas de autoplay y reproducción cuando la pestaña no tiene foco. _Mitigación_: opt-in estricto y manejo explícito de errores de play.
+- **Tipografías.** Si la display elegida es comercial, hay coste/licencia. _Mitigación_: candidatas open-source (Migra, PP Neue Montreal, Editorial New u otras con licencia OFL/permisiva).
+- **Escalado del shader entre GPUs.** El efecto puede verse muy distinto en Apple Silicon vs Intel iGPU vs móviles. _Mitigación_: presupuesto de complejidad por shader, testing en hardware variado, perfilado en DevTools.
 
 ### Preguntas abiertas (no bloquean entrega de spec)
 
@@ -263,11 +263,11 @@ Como no hay analytics, las métricas son cualitativas:
 
 ## Stack
 
-Stack confirmado: **Astro 5 + Three.js + GSAP + Lenis**. Detalle completo en [`STACK.md`](../STACK.md).
+Stack confirmado: **Astro 6 + Three.js + GSAP + Lenis**. Detalle completo en [`STACK.md`](../STACK.md).
 
 Resumen:
 
-- **Framework**: Astro 5, output 100% estático, TypeScript estricto.
+- **Framework**: Astro 6, output 100% estático, TypeScript estricto.
 - **Render 3D / shaders**: Three.js + GLSL.
 - **Scroll & animación**: GSAP + ScrollTrigger.
 - **Smooth scroll**: Lenis.
@@ -346,17 +346,17 @@ No aplica.
 
 #### Componentes principales
 
-| Componente | Tipo | Responsabilidad |
-|------------|------|-----------------|
-| `BaseLayout.astro` | Layout | `<html lang="en">`, `<head>` (meta + preloads), slot principal, monta islands persistentes. |
-| `Hero.astro` | Static | Título display + indicador de scroll. |
-| `ProjectSection.astro` | Static | Shell común para P1/P2/P3. Recibe `slug`, `title`, `tagline`, `palette`, `subSections[]`, slot para contenido MDX. |
-| `SubSection.astro` | Static | Wrapper con `data-pinning-id` para ScrollTrigger. |
-| `BackgroundManager` (island) | `client:load` | Three.js + partículas. Un único contexto WebGL para toda la página. |
-| `ScrollOrchestrator.ts` | Module | Lenis + GSAP, registra triggers, emite estado. |
-| `AudioToggle.astro` + `AudioManager` (island) | Static + `client:idle` | Botón sticky bottom-right + lógica de play/pause/persistencia. |
-| `PortfolioCTA.astro` | Static | Sección final + enlace al portfolio externo. |
-| `Footer.astro` | Static | `© rjrbio` con enlace a `https://github.com/rjrbio`. |
+| Componente                                    | Tipo                   | Responsabilidad                                                                                                    |
+| --------------------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `BaseLayout.astro`                            | Layout                 | `<html lang="en">`, `<head>` (meta + preloads), slot principal, monta islands persistentes.                        |
+| `Hero.astro`                                  | Static                 | Título display + indicador de scroll.                                                                              |
+| `ProjectSection.astro`                        | Static                 | Shell común para P1/P2/P3. Recibe `slug`, `title`, `tagline`, `palette`, `subSections[]`, slot para contenido MDX. |
+| `SubSection.astro`                            | Static                 | Wrapper con `data-pinning-id` para ScrollTrigger.                                                                  |
+| `BackgroundManager` (island)                  | `client:load`          | Three.js + partículas. Un único contexto WebGL para toda la página.                                                |
+| `ScrollOrchestrator.ts`                       | Module                 | Lenis + GSAP, registra triggers, emite estado.                                                                     |
+| `AudioToggle.astro` + `AudioManager` (island) | Static + `client:idle` | Botón sticky bottom-right + lógica de play/pause/persistencia.                                                     |
+| `PortfolioCTA.astro`                          | Static                 | Sección final + enlace al portfolio externo.                                                                       |
+| `Footer.astro`                                | Static                 | `© rjrbio` con enlace a `https://github.com/rjrbio`.                                                               |
 
 #### Sistema de fondos
 
@@ -417,15 +417,15 @@ Punto de partida para frontend-developer; styles-designer afina en su fase.
   --bg: #07060a;
   --fg: #f4f1ea;
   --fg-muted: #aaa3a0;
-  --p1: #5b6cff;       /* lore: cool blue/violet */
-  --p2: #ff7a3d;       /* mando: warm amber */
-  --p3: #d4a64a;       /* kintsugi: gold */
+  --p1: #5b6cff; /* lore: cool blue/violet */
+  --p2: #ff7a3d; /* mando: warm amber */
+  --p3: #d4a64a; /* kintsugi: gold */
 
   /* Type scale (clamp para responsive) */
   --fs-display-xl: clamp(4rem, 12vw, 11rem);
-  --fs-display-l:  clamp(3rem, 8vw, 7rem);
-  --fs-h1:         clamp(2rem, 5vw, 3.5rem);
-  --fs-body:       clamp(1rem, 1.1vw, 1.125rem);
+  --fs-display-l: clamp(3rem, 8vw, 7rem);
+  --fs-h1: clamp(2rem, 5vw, 3.5rem);
+  --fs-body: clamp(1rem, 1.1vw, 1.125rem);
 
   /* Spacing (8px base) */
   --sp-1: 0.5rem;
@@ -439,7 +439,7 @@ Punto de partida para frontend-developer; styles-designer afina en su fase.
   /* Motion */
   --ease-out: cubic-bezier(0.2, 0.6, 0.2, 1);
   --dur-fast: 200ms;
-  --dur-mid:  500ms;
+  --dur-mid: 500ms;
   --dur-slow: 1200ms;
 }
 ```
@@ -448,7 +448,7 @@ Punto de partida para frontend-developer; styles-designer afina en su fase.
 
 Fases secuenciales. Cada fase termina con `pnpm lint && pnpm typecheck && pnpm test && pnpm build` en verde antes de pasar a la siguiente.
 
-### Fase 0 — Setup del proyecto *(frontend-developer, una sola vez)*
+### Fase 0 — Setup del proyecto _(frontend-developer, una sola vez)_
 
 - `pnpm create astro@latest` con plantilla mínima (TypeScript strict).
 - Configurar ESLint + Prettier + Vitest + Playwright + `@astrojs/mdx`.
@@ -456,7 +456,7 @@ Fases secuenciales. Cada fase termina con `pnpm lint && pnpm typecheck && pnpm t
 - Crear estructura de carpetas indicada arriba (sólo carpetas + `.gitkeep` donde haga falta).
 - Commit: `chore: scaffold astro project with tooling`.
 
-### Fase 1 — Estructura base *(frontend-developer)*
+### Fase 1 — Estructura base _(frontend-developer)_
 
 - `BaseLayout.astro`: `<head>` con meta tags y preloads, `<main>`, slots.
 - `Hero.astro`: título display estático + indicador de scroll.
@@ -467,7 +467,7 @@ Fases secuenciales. Cada fase termina con `pnpm lint && pnpm typecheck && pnpm t
 - `src/pages/index.astro` con secciones placeholder en orden.
 - Commit: `feat(frontend): add base layout and static sections`.
 
-### Fase 2 — Secciones de proyectos *(frontend-developer)*
+### Fase 2 — Secciones de proyectos _(frontend-developer)_
 
 - `ProjectSection.astro` y `SubSection.astro`.
 - 3 archivos `.mdx` en `src/content/` con título, tagline, sub-secciones y párrafos según la spec.
@@ -475,14 +475,14 @@ Fases secuenciales. Cada fase termina con `pnpm lint && pnpm typecheck && pnpm t
 - Sin animaciones ni shaders aún — placeholders estáticos para los assets.
 - Commit: `feat(frontend): add project sections with mdx content`.
 
-### Fase 3 — Tests Fases 1–2 *(qa-tester, modo frontend)*
+### Fase 3 — Tests Fases 1–2 _(qa-tester, modo frontend)_
 
 - Vitest: tests unitarios donde haya lógica.
 - Verificación en navegador: render correcto, navegación por teclado, alt en imágenes, estructura semántica.
 - Lighthouse sin animación: accesibilidad ≥95.
 - Commit: `test(frontend): add tests for base layout and project sections`.
 
-### Fase 4 — Smooth scroll + scroll-pinning *(frontend-developer)*
+### Fase 4 — Smooth scroll + scroll-pinning _(frontend-developer)_
 
 - Instalar y configurar Lenis + GSAP + ScrollTrigger.
 - `ScrollOrchestrator.ts` registrado como island `client:load`.
@@ -490,7 +490,7 @@ Fases secuenciales. Cada fase termina con `pnpm lint && pnpm typecheck && pnpm t
 - Hook `prefers-reduced-motion` desactiva pins.
 - Commit: `feat(frontend): add smooth scroll and pinning`.
 
-### Fase 5 — Sistema de fondos *(frontend-developer + styles-designer en colaboración)*
+### Fase 5 — Sistema de fondos _(frontend-developer + styles-designer en colaboración)_
 
 - `BackgroundManager` island `client:load` con Three.js.
 - Único `<canvas>` fixed full-bleed.
@@ -500,7 +500,7 @@ Fases secuenciales. Cada fase termina con `pnpm lint && pnpm typecheck && pnpm t
 - Fallback CSS sin WebGL.
 - Commit: `feat(frontend): add webgl background and particles`.
 
-### Fase 6 — Audio *(frontend-developer)*
+### Fase 6 — Audio _(frontend-developer)_
 
 - `AudioManager` island `client:idle`.
 - `AudioToggle.astro` sticky bottom-right.
@@ -509,7 +509,7 @@ Fases secuenciales. Cada fase termina con `pnpm lint && pnpm typecheck && pnpm t
 - Manejo de errores de autoplay.
 - Commit: `feat(frontend): add audio toggle and ambient track`.
 
-### Fase 7 — Pulido visual definitivo *(styles-designer)*
+### Fase 7 — Pulido visual definitivo _(styles-designer)_
 
 - Selección final de display y body.
 - Paleta y tokens definitivos en `BRAND.md`.
@@ -517,7 +517,7 @@ Fases secuenciales. Cada fase termina con `pnpm lint && pnpm typecheck && pnpm t
 - Verificar mobile (animaciones simplificadas) y `prefers-reduced-motion`.
 - Commit: `style(frontend): finalize design system and animations`.
 
-### Fase 8 — Tests finales *(qa-tester, modo frontend + integration)*
+### Fase 8 — Tests finales _(qa-tester, modo frontend + integration)_
 
 - Tests adicionales sobre `AudioManager`, `BackgroundManager`, `ScrollOrchestrator`.
 - E2E con Playwright:
