@@ -5,10 +5,18 @@ slug: 'kintsugi-the-fall'
 palette: 'p3'
 ---
 
+import { Image } from 'astro:assets';
+
 import SubSection from '~/components/project/SubSection.astro';
 
+import theFallImage from '../../media/projects/kintsugi-the-fall/kintsugi.jpg';
+
 <SubSection id="the-fall" label="The fall">
-  <div class="asset-placeholder">[ aftermath of a lost battle ]</div>
+  <Image
+    src={theFallImage}
+    alt="Kintsugi: The Fall — concept art evoking the aftermath of a lost battle"
+    class="project-image"
+  />
   <p>
     The epic battle against the villain already happened. We lost. Half the kingdom fell; the
     capital is now the enemy's fortress. This isn't the rise of a hero — it's what comes after the

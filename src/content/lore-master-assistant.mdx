@@ -5,10 +5,16 @@ slug: 'lore-master-assistant'
 palette: 'p1'
 ---
 
+import { Image } from 'astro:assets';
+
 import SubSection from '~/components/project/SubSection.astro';
 
+import conceptImage from '../../media/projects/lore-master-assistant/1.png';
+import sourcesImage from '../../media/projects/lore-master-assistant/2.png';
+import inActionImage from '../../media/projects/lore-master-assistant/3.png';
+
 <SubSection id="concept" label="Concept">
-  <div class="asset-placeholder">[ ingest → embeddings → vector search → answer ]</div>
+  <Image src={conceptImage} alt="Lore Master Assistant — concept overview" class="project-image" />
   <p>
     General-purpose retrieval-augmented generation. Feed it knowledge, ask anything in natural
     language — the model never has to guess; it cites what you provided.
@@ -16,7 +22,11 @@ import SubSection from '~/components/project/SubSection.astro';
 </SubSection>
 
 <SubSection id="sources" label="Sources & formats">
-  <div class="asset-placeholder">[ TXT · MD · PDF · DOCX · URL ]</div>
+  <Image
+    src={sourcesImage}
+    alt="Lore Master Assistant — supported sources and file formats"
+    class="project-image"
+  />
   <p>
     Public URLs and local files (TXT, MD, PDF, DOCX) are parsed, chunked, and embedded into a single
     semantic vector store. Mixed sources, one knowledge base.
@@ -24,7 +34,11 @@ import SubSection from '~/components/project/SubSection.astro';
 </SubSection>
 
 <SubSection id="in-action" label="In action">
-  <div class="asset-placeholder">[ Q&A capture ]</div>
+  <Image
+    src={inActionImage}
+    alt="Lore Master Assistant — answering a question with sourced retrieval"
+    class="project-image"
+  />
   <p>
     Built on MongoDB Atlas Vector Search with OpenAI-compatible embeddings. Answers stay grounded in
     the documents you fed it — sourced retrieval, no hallucinated facts.
