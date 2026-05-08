@@ -9,7 +9,11 @@ import { Image } from 'astro:assets';
 
 import SubSection from '~/components/project/SubSection.astro';
 
-import theFallImage from '../../media/projects/kintsugi-the-fall/kintsugi.jpg';
+import theFallImage from '../../media/projects/kintsugi-the-fall/the-fall.jpg';
+import brokenWorldImage from '../../media/projects/kintsugi-the-fall/broken-world.jpg';
+import twentyTwoHeroesImage from '../../media/projects/kintsugi-the-fall/22-heroes.jpg';
+import yourOrderImage from '../../media/projects/kintsugi-the-fall/your-order.jpg';
+import wontMendImage from '../../media/projects/kintsugi-the-fall/wont-mend.png';
 
 <SubSection id="the-fall" label="The fall">
   <Image
@@ -25,7 +29,11 @@ import theFallImage from '../../media/projects/kintsugi-the-fall/kintsugi.jpg';
 </SubSection>
 
 <SubSection id="broken-world" label="The broken world">
-  <div class="asset-placeholder">[ a country in ruins ]</div>
+  <Image
+    src={brokenWorldImage}
+    alt="Kintsugi: The Fall — a country in ruins after the fall"
+    class="project-image"
+  />
   <p>
     A turn-based JRPG with active timing. Combat is precise, deliberate, and doesn't forgive
     complacency. Every encounter is a small declaration: this place is still worth fighting for.
@@ -33,7 +41,11 @@ import theFallImage from '../../media/projects/kintsugi-the-fall/kintsugi.jpg';
 </SubSection>
 
 <SubSection id="22-heroes" label="22 heroes">
-  <div class="asset-placeholder">[ portraits — one per town ]</div>
+  <Image
+    src={twentyTwoHeroesImage}
+    alt="Kintsugi: The Fall — the twenty-two playable heroes, one per town"
+    class="project-image"
+  />
   <p>
     Up to twenty-two playable heroes, each rooted in their own town. Recruit them as you push back
     through the country. Each carries the weight of a place — and that place's expectations.
@@ -41,7 +53,11 @@ import theFallImage from '../../media/projects/kintsugi-the-fall/kintsugi.jpg';
 </SubSection>
 
 <SubSection id="your-order" label="Your order">
-  <div class="asset-placeholder">[ a map of liberation paths ]</div>
+  <Image
+    src={yourOrderImage}
+    alt="Kintsugi: The Fall — map showing alternative liberation paths"
+    class="project-image"
+  />
   <p>
     Liberate cities in the order you choose. Different routes meet different heroes, surface
     different stories, leave different scars. There is no canonical path.
@@ -49,7 +65,11 @@ import theFallImage from '../../media/projects/kintsugi-the-fall/kintsugi.jpg';
 </SubSection>
 
 <SubSection id="wont-mend" label="Won't fully mend">
-  <div class="asset-placeholder">[ kintsugi — gold over fracture ]</div>
+  <Image
+    src={wontMendImage}
+    alt="Kintsugi: The Fall — kintsugi mending, gold lacquer over fracture"
+    class="project-image"
+  />
   <p>
     Kintsugi: the art of repairing broken pottery with gold lacquer. The cracks remain visible,
     glowing. The world that was won't be back, not entirely. What it becomes is on you.

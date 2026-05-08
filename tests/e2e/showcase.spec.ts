@@ -41,17 +41,17 @@ test.describe('Projects Showcase', () => {
     await expect(page.locator('h2')).toHaveCount(4);
   });
 
-  test('renders 7 project images and 5 remaining placeholders', async ({ page }) => {
-    // Lore (3) + Mando (3) + Kintsugi (1) = 7 images integrated
-    await expect(page.locator('img.project-image')).toHaveCount(7);
-    // Kintsugi still has 5 sub-sections without imagery
-    await expect(page.locator('.asset-placeholder')).toHaveCount(5);
+  test('renders 11 project images and 1 remaining placeholder for status', async ({ page }) => {
+    // Lore (3) + Mando (3) + Kintsugi (5) = 11 images integrated
+    await expect(page.locator('img.project-image')).toHaveCount(11);
+    // Only the Kintsugi "status" sub-section keeps the placeholder
+    await expect(page.locator('.asset-placeholder')).toHaveCount(1);
   });
 
   test('every project image carries a meaningful alt text', async ({ page }) => {
     const images = page.locator('img.project-image');
     const count = await images.count();
-    expect(count).toBe(7);
+    expect(count).toBe(11);
     for (let i = 0; i < count; i++) {
       const alt = await images.nth(i).getAttribute('alt');
       expect(alt, `image #${i} should have alt`).toBeTruthy();

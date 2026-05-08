@@ -53,7 +53,7 @@ Recomendaciones:
 
 ## Pendiente
 
-- [ ] Capturas de Lore Master Assistant.
-- [ ] Capturas de Rule The Mando.
-- [ ] Arte/capturas/clips de Kintsugi: The Fall (sección protagónica — más material).
+- [x] Capturas de Lore Master Assistant.
+- [x] Capturas de Rule The Mando.
+- [x] Arte/capturas/clips de Kintsugi: The Fall (5/6 sub-secciones; `status` se queda con placeholder por diseño).
 - [ ] Pista ambient + microsonidos.
