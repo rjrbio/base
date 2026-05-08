@@ -258,3 +258,279 @@ Como no hay analytics, las métricas son cualitativas:
 - Recorrido completo del scroll (visitante llega al CTA).
 - Click-through al portfolio (verificable solo si el portfolio mide tráfico entrante).
 - Feedback cualitativo: percepción de "memorable", "diferenciado", "transmite oficio".
+
+---
+
+## Stack
+
+Stack confirmado: **Astro 5 + Three.js + GSAP + Lenis**. Detalle completo en [`STACK.md`](../STACK.md).
+
+Resumen:
+
+- **Framework**: Astro 5, output 100% estático, TypeScript estricto.
+- **Render 3D / shaders**: Three.js + GLSL.
+- **Scroll & animación**: GSAP + ScrollTrigger.
+- **Smooth scroll**: Lenis.
+- **Contenido por proyecto**: MDX en `src/content/`.
+- **Estilos**: CSS nativo con variables (sin framework de estilos).
+- **Hosting target**: Cloudflare Pages.
+
+## Estructura de carpetas
+
+```
+.
+├── src/
+│   ├── components/
+│   │   ├── audio/          AudioToggle + AudioManager island
+│   │   ├── background/     BackgroundManager island (shader + particles)
+│   │   ├── hero/
+│   │   ├── project/        ProjectSection + SubSection
+│   │   ├── cta/
+│   │   └── footer/
+│   ├── content/            MDX por proyecto
+│   │   ├── lore-master-assistant.mdx
+│   │   ├── rule-the-mando.mdx
+│   │   └── kintsugi-the-fall.mdx
+│   ├── layouts/
+│   │   └── BaseLayout.astro
+│   ├── lib/
+│   │   ├── three/          renderer + scene helpers
+│   │   ├── shaders/        GLSL crudo organizado por sección
+│   │   ├── scroll/         Lenis + ScrollTrigger orquestación
+│   │   └── audio/          AudioManager + persistencia (localStorage)
+│   ├── pages/
+│   │   └── index.astro
+│   ├── styles/
+│   │   ├── tokens.css      Variables CSS (color, type, spacing, motion)
+│   │   ├── reset.css
+│   │   └── globals.css
+│   └── env.d.ts
+├── public/
+│   ├── audio/              Pistas finales (mp3)
+│   ├── fonts/              Display + body
+│   └── media/              Imágenes/clips optimizados (build pipeline)
+├── media/                  Fuentes sin optimizar (existe ya)
+├── tests/
+│   ├── unit/               Vitest
+│   └── e2e/                Playwright
+├── astro.config.mjs
+├── tsconfig.json
+├── package.json
+└── ...
+```
+
+`media/` (ya creado) almacena las **fuentes sin optimizar** que el usuario aporta. El build pipeline de Astro genera versiones optimizadas en `public/media/` o equivalente que decida el frontend-developer.
+
+## Arquitectura técnica
+
+### Backend
+
+No aplica. Sitio 100% estático.
+
+### API contract
+
+No aplica.
+
+### Frontend
+
+#### Mount y orquestación
+
+`src/pages/index.astro` declara las secciones en orden: Hero → P1 → P2 → P3 → CTA → Footer. Todo se renderiza a HTML estático en build. Las islas interactivas se hidratan con tres directivas:
+
+- `<BackgroundManager client:load>` — gestor central de fondos. **Una única instancia** que inicializa Three.js (renderer, escena, canvas full-bleed) y el sistema de partículas. Recibe el estado de la sección visible y interpola entre presets.
+- `<ScrollOrchestrator client:load>` — inicializa Lenis + GSAP/ScrollTrigger. Define los pinning ranges y emite eventos de progreso al BackgroundManager y a los title reveals.
+- `<AudioManager client:idle>` — carga diferida; se monta cuando el navegador entra en idle.
+- Sub-secciones internas pueden hidratarse `client:visible` si requieren JS local (raro en este diseño).
+
+**Por qué un único canvas WebGL**: los navegadores limitan los contextos WebGL activos por pestaña. Un único canvas con un único renderer es eficiente y permite cross-fades suaves entre presets.
+
+#### Componentes principales
+
+| Componente | Tipo | Responsabilidad |
+|------------|------|-----------------|
+| `BaseLayout.astro` | Layout | `<html lang="en">`, `<head>` (meta + preloads), slot principal, monta islands persistentes. |
+| `Hero.astro` | Static | Título display + indicador de scroll. |
+| `ProjectSection.astro` | Static | Shell común para P1/P2/P3. Recibe `slug`, `title`, `tagline`, `palette`, `subSections[]`, slot para contenido MDX. |
+| `SubSection.astro` | Static | Wrapper con `data-pinning-id` para ScrollTrigger. |
+| `BackgroundManager` (island) | `client:load` | Three.js + partículas. Un único contexto WebGL para toda la página. |
+| `ScrollOrchestrator.ts` | Module | Lenis + GSAP, registra triggers, emite estado. |
+| `AudioToggle.astro` + `AudioManager` (island) | Static + `client:idle` | Botón sticky bottom-right + lógica de play/pause/persistencia. |
+| `PortfolioCTA.astro` | Static | Sección final + enlace al portfolio externo. |
+| `Footer.astro` | Static | `© rjrbio` con enlace a `https://github.com/rjrbio`. |
+
+#### Sistema de fondos
+
+Una única instancia de `THREE.WebGLRenderer` adjunta a un `<canvas>` posicionado `fixed; inset: 0; z-index: -1`. La escena contiene:
+
+1. **Fullscreen quad con shader** (background dinámico).
+   - Uniforms: `uTime`, `uScrollProgress` (0–1 dentro de la sección activa), `uSectionId` (0–5), `uPalette` (vec3), `uMix` (interpolación entre dos shaders en transición), `uReducedMotion` (bool).
+   - Cada sección tiene su par de fragment shaders propio (P1: data stream; P2: CRT grid deformado; P3: kintsugi cracks; etc.). En el cambio de sección se interpola por `uMix`.
+
+2. **Sistema de partículas** sobre el shader.
+   - `THREE.Points` con buffer geometry de `N` puntos (densidad escalada por device pixel ratio y viewport).
+   - Reactivo a scroll y a mouse en desktop.
+   - Densidad/velocidad/color cambian por sección via uniforms.
+
+Performance:
+
+- `renderer.setPixelRatio(Math.min(devicePixelRatio, 2))`.
+- Render loop solo cuando `document.visibilityState === "visible"`.
+- Pausa total cuando ningún canvas/sección está en viewport (raro en single-page, pero protección).
+- `prefers-reduced-motion`: shader pasa a frame estático; partículas desactivadas; transiciones entre secciones reducidas a cross-fade simple.
+
+Fallback sin WebGL:
+
+- Detección al boot. Si no hay WebGL disponible se monta `<BackgroundCSSFallback>` con gradientes animados CSS y partículas SVG ligeras. Sin paridad visual, pero coherente.
+
+#### Scroll-pinning
+
+Lenis envuelve el scroll del documento (smooth, inertia, compatibilidad mobile). GSAP/ScrollTrigger usa los `data-pinning-id`:
+
+- Pinea cada sub-sección durante su animación principal.
+- Anima títulos/textos con timeline (stagger en title reveal).
+- Emite `onUpdate` con el progreso (0–1) al BackgroundManager para interpolar uniforms.
+
+En `prefers-reduced-motion: reduce`, los pins se desactivan: la página queda con scroll normal y las sub-secciones aparecen con cross-fade simple.
+
+#### Audio
+
+`AudioManager` carga las pistas con `<audio preload="none">` y solo dispara `play()` tras gesto del usuario.
+
+- Política `localStorage["audio-enabled"]` persiste preferencia.
+- Master volume bajo (~0.4) en ambient; microsonidos a ~0.6.
+- Pool reutilizable de `HTMLAudioElement` clonados para hovers (cheap).
+- Si `play()` rechaza por política de autoplay, el toggle informa al usuario y permanece off.
+
+#### Tipografías
+
+- Display y body desde `public/fonts/`, servidas con `@font-face` y `font-display: swap`.
+- Preload del peso clave del display en `<head>`.
+- Selección final por styles-designer en fase 7. Candidatas iniciales: Migra (display), Bricolage Grotesque (display alternativo), Inter o Geist (body).
+
+#### Tokens base (`src/styles/tokens.css`)
+
+Punto de partida para frontend-developer; styles-designer afina en su fase.
+
+```css
+:root {
+  /* Color */
+  --bg: #07060a;
+  --fg: #f4f1ea;
+  --fg-muted: #aaa3a0;
+  --p1: #5b6cff;       /* lore: cool blue/violet */
+  --p2: #ff7a3d;       /* mando: warm amber */
+  --p3: #d4a64a;       /* kintsugi: gold */
+
+  /* Type scale (clamp para responsive) */
+  --fs-display-xl: clamp(4rem, 12vw, 11rem);
+  --fs-display-l:  clamp(3rem, 8vw, 7rem);
+  --fs-h1:         clamp(2rem, 5vw, 3.5rem);
+  --fs-body:       clamp(1rem, 1.1vw, 1.125rem);
+
+  /* Spacing (8px base) */
+  --sp-1: 0.5rem;
+  --sp-2: 1rem;
+  --sp-3: 1.5rem;
+  --sp-4: 2rem;
+  --sp-6: 3rem;
+  --sp-8: 4rem;
+  --sp-12: 6rem;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.2, 0.6, 0.2, 1);
+  --dur-fast: 200ms;
+  --dur-mid:  500ms;
+  --dur-slow: 1200ms;
+}
+```
+
+## Plan de ejecución
+
+Fases secuenciales. Cada fase termina con `pnpm lint && pnpm typecheck && pnpm test && pnpm build` en verde antes de pasar a la siguiente.
+
+### Fase 0 — Setup del proyecto *(frontend-developer, una sola vez)*
+
+- `pnpm create astro@latest` con plantilla mínima (TypeScript strict).
+- Configurar ESLint + Prettier + Vitest + Playwright + `@astrojs/mdx`.
+- Añadir scripts: `dev`, `build`, `preview`, `lint`, `format`, `typecheck`, `test`, `test:e2e`.
+- Crear estructura de carpetas indicada arriba (sólo carpetas + `.gitkeep` donde haga falta).
+- Commit: `chore: scaffold astro project with tooling`.
+
+### Fase 1 — Estructura base *(frontend-developer)*
+
+- `BaseLayout.astro`: `<head>` con meta tags y preloads, `<main>`, slots.
+- `Hero.astro`: título display estático + indicador de scroll.
+- `Footer.astro`: `© rjrbio` enlazando a `https://github.com/rjrbio`.
+- `PortfolioCTA.astro`: copy + enlace al portfolio (`target="_blank"`, `rel="noopener noreferrer"`).
+- `tokens.css`, `reset.css`, `globals.css`.
+- Tipografías placeholder en `public/fonts/` (las definitivas en fase 7).
+- `src/pages/index.astro` con secciones placeholder en orden.
+- Commit: `feat(frontend): add base layout and static sections`.
+
+### Fase 2 — Secciones de proyectos *(frontend-developer)*
+
+- `ProjectSection.astro` y `SubSection.astro`.
+- 3 archivos `.mdx` en `src/content/` con título, tagline, sub-secciones y párrafos según la spec.
+- Layout responsive (mobile-first; breakpoints `≤480`, `≤768`, `≤1024`, `≤1440`).
+- Sin animaciones ni shaders aún — placeholders estáticos para los assets.
+- Commit: `feat(frontend): add project sections with mdx content`.
+
+### Fase 3 — Tests Fases 1–2 *(qa-tester, modo frontend)*
+
+- Vitest: tests unitarios donde haya lógica.
+- Verificación en navegador: render correcto, navegación por teclado, alt en imágenes, estructura semántica.
+- Lighthouse sin animación: accesibilidad ≥95.
+- Commit: `test(frontend): add tests for base layout and project sections`.
+
+### Fase 4 — Smooth scroll + scroll-pinning *(frontend-developer)*
+
+- Instalar y configurar Lenis + GSAP + ScrollTrigger.
+- `ScrollOrchestrator.ts` registrado como island `client:load`.
+- Pinning de sub-secciones; title reveals con stagger.
+- Hook `prefers-reduced-motion` desactiva pins.
+- Commit: `feat(frontend): add smooth scroll and pinning`.
+
+### Fase 5 — Sistema de fondos *(frontend-developer + styles-designer en colaboración)*
+
+- `BackgroundManager` island `client:load` con Three.js.
+- Único `<canvas>` fixed full-bleed.
+- 5–6 fragment shaders + sistema de partículas.
+- Interpolación entre presets (`uMix`).
+- Pausa en pestaña inactiva.
+- Fallback CSS sin WebGL.
+- Commit: `feat(frontend): add webgl background and particles`.
+
+### Fase 6 — Audio *(frontend-developer)*
+
+- `AudioManager` island `client:idle`.
+- `AudioToggle.astro` sticky bottom-right.
+- Pista ambient + 1–2 microsonidos.
+- Persistencia en `localStorage`.
+- Manejo de errores de autoplay.
+- Commit: `feat(frontend): add audio toggle and ambient track`.
+
+### Fase 7 — Pulido visual definitivo *(styles-designer)*
+
+- Selección final de display y body.
+- Paleta y tokens definitivos en `BRAND.md`.
+- Afinar shaders, partículas, paleta por sección.
+- Verificar mobile (animaciones simplificadas) y `prefers-reduced-motion`.
+- Commit: `style(frontend): finalize design system and animations`.
+
+### Fase 8 — Tests finales *(qa-tester, modo frontend + integration)*
+
+- Tests adicionales sobre `AudioManager`, `BackgroundManager`, `ScrollOrchestrator`.
+- E2E con Playwright:
+  - Scroll completo desde hero a footer sin errores en consola.
+  - CTA enlaza al portfolio (`target="_blank"`).
+  - Toggle de audio persiste tras recarga.
+  - `prefers-reduced-motion` desactiva animaciones pesadas.
+- Lighthouse: LCP <3 s desktop / <5 s mobile en 4G simulado, accesibilidad ≥95.
+- Verificación manual final en navegador.
+- Commit: `test(frontend): add e2e and integration tests`.
+
+### Cobertura mínima
+
+- `src/lib/`: **80%**.
+- `src/components/` con lógica: **70%**.
+- Componentes static-only: cobertura por E2E.
