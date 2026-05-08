@@ -80,4 +80,55 @@ test.describe('Projects Showcase', () => {
     await page.waitForLoadState('networkidle');
     expect(errors).toEqual([]);
   });
+
+  test('audio toggle is rendered, sticky and disabled until assets ship', async ({ page }) => {
+    const button = page.locator('[data-audio-toggle]');
+    await expect(button).toBeVisible();
+    await expect(button).toBeDisabled();
+    await expect(button).toHaveAttribute('aria-label', /not available/i);
+    const position = await button.evaluate((el) => getComputedStyle(el).position);
+    expect(position).toBe('fixed');
+  });
+
+  test('mounts a webgl background canvas behind the content', async ({ page }) => {
+    const canvas = page.locator('[data-background-canvas]');
+    await expect(canvas).toHaveCount(1);
+    await expect(canvas).toHaveAttribute('aria-hidden', 'true');
+    const z = await canvas.evaluate((el) => getComputedStyle(el).zIndex);
+    expect(z).toBe('-1');
+  });
+
+  test('scrolls from hero to footer without console errors', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (err) => errors.push(`pageerror: ${err.message}`));
+    page.on('console', (msg) => {
+      if (msg.type() !== 'error') return;
+      const text = msg.text();
+      if (/Failed to load resource.*404/i.test(text)) return;
+      errors.push(text);
+    });
+
+    await page.goto('/');
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.waitForTimeout(600);
+    await expect(page.getByRole('contentinfo')).toBeVisible();
+    expect(errors).toEqual([]);
+  });
+});
+
+test('renders all sections statically with prefers-reduced-motion', async ({ browser }) => {
+  const ctx = await browser.newContext({
+    reducedMotion: 'reduce',
+    baseURL: 'http://localhost:4321',
+  });
+  const page = await ctx.newPage();
+  try {
+    await page.goto('/');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('BUILT FROM CURIOSITY.');
+    await expect(page.getByRole('heading', { name: 'Lore Master Assistant' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Kintsugi: The Fall' })).toBeVisible();
+    await expect(page.getByRole('contentinfo')).toBeVisible();
+  } finally {
+    await ctx.close();
+  }
 });
