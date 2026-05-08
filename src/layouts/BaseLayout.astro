@@ -24,9 +24,12 @@ const {
     <title>{title}</title>
   </head>
   <body>
+    <canvas class="background-canvas" data-background-canvas aria-hidden="true"></canvas>
     <slot />
     <script>
+      import { initBackground } from '../lib/three/BackgroundManager';
       import { initScroll } from '../lib/scroll/ScrollOrchestrator';
+      initBackground();
       initScroll();
     </script>
   </body>

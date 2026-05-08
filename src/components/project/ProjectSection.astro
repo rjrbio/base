@@ -14,6 +14,7 @@ const { slug, title, tagline, palette = 'p1' } = Astro.props;
   class={`project project--${palette}`}
   aria-labelledby={`${slug}-title`}
   data-project={slug}
+  data-bg-section={slug}
 >
   <header class="project__header">
     <h2 id={`${slug}-title`} class="project__title" data-reveal="title">{title}</h2>
