@@ -1,4 +1,5 @@
 export interface BackgroundPreset {
+  id: string;
   pattern: number;
   color1: readonly [number, number, number];
   color2: readonly [number, number, number];
@@ -7,6 +8,7 @@ export interface BackgroundPreset {
 }
 
 export const HERO_PRESET: BackgroundPreset = {
+  id: 'hero',
   pattern: 0,
   color1: [0.027, 0.024, 0.039],
   color2: [0.35, 0.35, 0.45],
@@ -15,6 +17,7 @@ export const HERO_PRESET: BackgroundPreset = {
 };
 
 const LORE_PRESET: BackgroundPreset = {
+  id: 'lore-master-assistant',
   pattern: 1,
   color1: [0.027, 0.024, 0.039],
   color2: [0.357, 0.424, 1.0],
@@ -23,6 +26,7 @@ const LORE_PRESET: BackgroundPreset = {
 };
 
 const MANDO_PRESET: BackgroundPreset = {
+  id: 'rule-the-mando',
   pattern: 2,
   color1: [0.027, 0.024, 0.039],
   color2: [1.0, 0.478, 0.239],
@@ -31,6 +35,7 @@ const MANDO_PRESET: BackgroundPreset = {
 };
 
 const KINTSUGI_PRESET: BackgroundPreset = {
+  id: 'kintsugi-the-fall',
   pattern: 3,
   color1: [0.027, 0.024, 0.039],
   color2: [0.831, 0.651, 0.29],
@@ -39,6 +44,7 @@ const KINTSUGI_PRESET: BackgroundPreset = {
 };
 
 const CTA_PRESET: BackgroundPreset = {
+  id: 'cta',
   pattern: 4,
   color1: [0.027, 0.024, 0.039],
   color2: [0.7, 0.6, 0.4],
@@ -46,10 +52,10 @@ const CTA_PRESET: BackgroundPreset = {
   particleColor: [0.6, 0.5, 0.4],
 };
 
-export const PRESETS: Record<string, BackgroundPreset> = {
-  hero: HERO_PRESET,
-  'lore-master-assistant': LORE_PRESET,
-  'rule-the-mando': MANDO_PRESET,
-  'kintsugi-the-fall': KINTSUGI_PRESET,
-  cta: CTA_PRESET,
-};
+export const SECTIONS: readonly BackgroundPreset[] = [
+  HERO_PRESET,
+  LORE_PRESET,
+  MANDO_PRESET,
+  KINTSUGI_PRESET,
+  CTA_PRESET,
+];

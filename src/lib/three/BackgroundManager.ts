@@ -2,20 +2,21 @@ import * as THREE from 'three';
 
 import { backgroundFrag, backgroundVert } from '../shaders/background';
 import { particlesFrag, particlesVert } from '../shaders/particles';
-import { HERO_PRESET, PRESETS, type BackgroundPreset } from './presets';
+import { HERO_PRESET, SECTIONS, type BackgroundPreset } from './presets';
 
 let initialized = false;
 
 const lerp = (a: number, b: number, t: number): number => a + (b - a) * t;
 
-const lerpVec3 = (
+const setLerpVec3 = (
   out: THREE.Vector3,
-  target: readonly [number, number, number],
+  a: readonly [number, number, number],
+  b: readonly [number, number, number],
   t: number,
 ): void => {
-  out.x = lerp(out.x, target[0], t);
-  out.y = lerp(out.y, target[1], t);
-  out.z = lerp(out.z, target[2], t);
+  out.x = a[0] + (b[0] - a[0]) * t;
+  out.y = a[1] + (b[1] - a[1]) * t;
+  out.z = a[2] + (b[2] - a[2]) * t;
 };
 
 function detectWebGL(canvas: HTMLCanvasElement): boolean {
@@ -28,6 +29,12 @@ function detectWebGL(canvas: HTMLCanvasElement): boolean {
   } catch {
     return false;
   }
+}
+
+interface SectionRange {
+  preset: BackgroundPreset;
+  top: number;
+  bottom: number;
 }
 
 export function initBackground(): void {
@@ -54,6 +61,7 @@ export function initBackground(): void {
 
   const bgUniforms = {
     uTime: { value: 0 },
+    uScrollGlobal: { value: 0 },
     uColor1: { value: new THREE.Vector3(...HERO_PRESET.color1) },
     uColor2: { value: new THREE.Vector3(...HERO_PRESET.color2) },
     uPattern: { value: HERO_PRESET.pattern },
@@ -70,6 +78,7 @@ export function initBackground(): void {
 
   let particleUniforms: {
     uTime: { value: number };
+    uScrollGlobal: { value: number };
     uColor: { value: THREE.Vector3 };
     uReducedMotion: { value: number };
   } | null = null;
@@ -93,6 +102,7 @@ export function initBackground(): void {
 
     particleUniforms = {
       uTime: { value: 0 },
+      uScrollGlobal: { value: 0 },
       uColor: { value: new THREE.Vector3(...HERO_PRESET.particleColor) },
       uReducedMotion: { value: 0 },
     };
@@ -107,47 +117,79 @@ export function initBackground(): void {
     scene.add(new THREE.Points(particleGeometry, particleMaterial));
   }
 
-  let targetPreset: BackgroundPreset = HERO_PRESET;
+  let ranges: SectionRange[] = [];
 
-  const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-bg-section]'));
-  if (sections.length > 0) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting && entry.intersectionRatio >= 0.4) {
-            const key = entry.target.getAttribute('data-bg-section') ?? 'hero';
-            const preset = PRESETS[key];
-            if (preset) targetPreset = preset;
-          }
-        }
-      },
-      { threshold: [0, 0.4, 0.8] },
-    );
-    for (const sec of sections) observer.observe(sec);
-  }
-
-  const onResize = (): void => {
-    renderer.setSize(window.innerWidth, window.innerHeight, false);
+  const computeRanges = (): void => {
+    const newRanges: SectionRange[] = [];
+    for (const preset of SECTIONS) {
+      const el = document.querySelector<HTMLElement>(`[data-bg-section="${preset.id}"]`);
+      if (!el) continue;
+      const rect = el.getBoundingClientRect();
+      const top = rect.top + window.scrollY;
+      newRanges.push({ preset, top, bottom: top + rect.height });
+    }
+    ranges = newRanges;
   };
-  window.addEventListener('resize', onResize);
+
+  computeRanges();
+  window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight, false);
+    computeRanges();
+  });
+  // Recompute after a tick: layout/fonts may shift positions slightly.
+  window.addEventListener('load', computeRanges, { once: true });
 
   let running = true;
   document.addEventListener('visibilitychange', () => {
     running = document.visibilityState === 'visible';
   });
 
+  const lookupActive = (): { current: BackgroundPreset; next: BackgroundPreset; t: number } => {
+    const first = ranges[0];
+    if (!first) {
+      return { current: HERO_PRESET, next: HERO_PRESET, t: 0 };
+    }
+    const last = ranges[ranges.length - 1];
+    if (!last) {
+      return { current: first.preset, next: first.preset, t: 0 };
+    }
+    const center = window.scrollY + window.innerHeight / 2;
+    if (center <= first.top) {
+      return { current: first.preset, next: first.preset, t: 0 };
+    }
+    if (center >= last.bottom) {
+      return { current: last.preset, next: last.preset, t: 1 };
+    }
+    for (let i = 0; i < ranges.length; i++) {
+      const r = ranges[i];
+      if (!r) continue;
+      if (center >= r.top && center < r.bottom) {
+        const local = (center - r.top) / Math.max(r.bottom - r.top, 1);
+        const next = ranges[i + 1]?.preset ?? r.preset;
+        return { current: r.preset, next, t: local };
+      }
+    }
+    return { current: first.preset, next: first.preset, t: 0 };
+  };
+
   const tick = (time: number): void => {
     if (running) {
-      const t = 0.04;
+      const { current, next, t } = lookupActive();
+
       bgUniforms.uTime.value = time * 0.001;
-      bgUniforms.uPattern.value = lerp(bgUniforms.uPattern.value, targetPreset.pattern, t);
-      bgUniforms.uIntensity.value = lerp(bgUniforms.uIntensity.value, targetPreset.intensity, t);
-      lerpVec3(bgUniforms.uColor1.value, targetPreset.color1, t);
-      lerpVec3(bgUniforms.uColor2.value, targetPreset.color2, t);
+      bgUniforms.uPattern.value = lerp(current.pattern, next.pattern, t);
+      bgUniforms.uIntensity.value = lerp(current.intensity, next.intensity, t);
+      setLerpVec3(bgUniforms.uColor1.value, current.color1, next.color1, t);
+      setLerpVec3(bgUniforms.uColor2.value, current.color2, next.color2, t);
+
+      const docHeight = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+      const globalScroll = Math.min(Math.max(window.scrollY / docHeight, 0), 1);
+      bgUniforms.uScrollGlobal.value = globalScroll;
 
       if (particleUniforms) {
         particleUniforms.uTime.value = time;
-        lerpVec3(particleUniforms.uColor.value, targetPreset.particleColor, t);
+        particleUniforms.uScrollGlobal.value = globalScroll;
+        setLerpVec3(particleUniforms.uColor.value, current.particleColor, next.particleColor, t);
       }
 
       renderer.render(scene, camera);
