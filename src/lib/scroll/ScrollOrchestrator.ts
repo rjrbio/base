@@ -57,4 +57,47 @@ export function initScroll(): void {
       },
     });
   });
+
+  const isWide = window.matchMedia('(min-width: 900px)').matches;
+  const subsectionTexts = document.querySelectorAll<HTMLElement>('.subsection__content > p');
+  subsectionTexts.forEach((el) => {
+    gsap.from(el, {
+      opacity: 0,
+      x: isWide ? 60 : 0,
+      y: isWide ? 0 : 20,
+      duration: 1,
+      delay: 0.2,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 85%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+  });
+
+  // Polaroid teatral: each project image gets a deterministic tilt and a soft
+  // scroll-driven parallax. The tilt cycles through three values so adjacent
+  // items don't lean the same way.
+  const tiltCycle = [-1.5, 0.9, -0.6];
+  const projectImages = document.querySelectorAll<HTMLElement>('.project-image');
+  projectImages.forEach((img, i) => {
+    const tilt = tiltCycle[i % tiltCycle.length];
+    gsap.set(img, { rotation: tilt });
+    gsap.fromTo(
+      img,
+      { yPercent: 8 },
+      {
+        yPercent: -8,
+        rotation: tilt,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: img,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true,
+        },
+      },
+    );
+  });
 }
