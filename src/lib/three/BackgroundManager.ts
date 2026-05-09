@@ -60,9 +60,9 @@ export function initBackground(): void {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight, false);
-  renderer.setClearColor(0x010104, 1);
+  renderer.setClearColor(0x000000, 1);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
+  renderer.toneMappingExposure = 0.85;
 
   const scene = new THREE.Scene();
   const aspect = window.innerWidth / window.innerHeight;
@@ -77,10 +77,12 @@ export function initBackground(): void {
   const gridPositions = new Float32Array(COUNT * 2);
   const scales = new Float32Array(COUNT * 2);
   const axes = new Float32Array(COUNT * 3);
+  const depths = new Float32Array(COUNT);
   geometry.setAttribute('aSeed', new THREE.InstancedBufferAttribute(seeds, 1));
   geometry.setAttribute('aGridPos', new THREE.InstancedBufferAttribute(gridPositions, 2));
   geometry.setAttribute('aScale', new THREE.InstancedBufferAttribute(scales, 2));
   geometry.setAttribute('aAxis', new THREE.InstancedBufferAttribute(axes, 3));
+  geometry.setAttribute('aDepth', new THREE.InstancedBufferAttribute(depths, 1));
 
   const uMouse = new THREE.Vector2(0, 0);
   const uMouseWorld = new THREE.Vector2(0, 0);
@@ -145,6 +147,10 @@ export function initBackground(): void {
       axes[i * 3 + 1] = ay / len;
       axes[i * 3 + 2] = az / len;
 
+      // Per-instance depth in [0..1]. Drives parallax: closer pieces (depth ~1)
+      // displace further with scroll, far pieces barely move.
+      depths[i] = rng();
+
       i++;
     }
   }
@@ -159,9 +165,9 @@ export function initBackground(): void {
 
   const bloomPass = new UnrealBloomPass(
     new THREE.Vector2(window.innerWidth, window.innerHeight),
-    0.95, // strength
-    0.6, // radius
-    0.18, // threshold
+    0.85, // strength
+    0.55, // radius
+    0.42, // threshold (raised — only the rim/ember pass through)
   );
   composer.addPass(bloomPass);
   composer.addPass(new OutputPass());
@@ -250,10 +256,12 @@ export function initBackground(): void {
     onUpdate: (self) => {
       const p = self.progress;
       uniforms.uProgress.value = p;
-      // Camera parallax: sinks slightly and pulls back as we descend the page,
-      // making the "background-fixed-by-scroll" relationship visible.
-      camera.position.y = -p * 1.6;
-      camera.position.z = 5 + p * 2.2;
+      // Camera barely moves; the heavy lifting is the per-instance depth
+      // parallax inside the vertex shader. A tiny pull-back gives a sense
+      // of "settling" as we approach the end without competing with the
+      // shader's own motion.
+      camera.position.y = -p * 0.25;
+      camera.position.z = 5 + p * 0.6;
       camera.updateProjectionMatrix();
     },
   });
