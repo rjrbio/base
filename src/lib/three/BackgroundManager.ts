@@ -248,23 +248,30 @@ export function initBackground(): void {
 
   // ---- Scroll → uProgress + camera parallax via GSAP ScrollTrigger ----
   gsap.registerPlugin(ScrollTrigger);
-  ScrollTrigger.create({
-    trigger: document.body,
-    start: 'top top',
-    end: 'bottom bottom',
-    scrub: 0.3,
+  const trigger = ScrollTrigger.create({
+    start: 0,
+    end: 'max',
     onUpdate: (self) => {
       const p = self.progress;
       uniforms.uProgress.value = p;
-      // Camera barely moves; the heavy lifting is the per-instance depth
-      // parallax inside the vertex shader. A tiny pull-back gives a sense
-      // of "settling" as we approach the end without competing with the
-      // shader's own motion.
-      camera.position.y = -p * 0.25;
-      camera.position.z = 5 + p * 0.6;
+      // Camera now moves visibly: descends 1.5 world units and pulls back
+      // 1.0. Combined with the per-instance depth parallax, the viewport
+      // genuinely travels through the field as you scroll.
+      camera.position.y = -p * 1.5;
+      camera.position.z = 5 + p * 1.0;
       camera.updateProjectionMatrix();
     },
   });
+  // Refresh after layout settles (images, fonts) so start/end use the final
+  // document height instead of a half-loaded snapshot.
+  const refresh = (): void => {
+    trigger.refresh();
+  };
+  if (document.readyState === 'complete') {
+    setTimeout(refresh, 100);
+  } else {
+    window.addEventListener('load', () => setTimeout(refresh, 100), { once: true });
+  }
 
   // ---- Render loop ----
   const tick = (time: number): void => {

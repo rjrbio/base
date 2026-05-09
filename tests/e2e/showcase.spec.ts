@@ -130,6 +130,35 @@ test.describe('Projects Showcase', () => {
   });
 });
 
+test('background pixels change visibly between scroll positions', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+  await page.waitForTimeout(800);
+
+  const probe = { x: 40, y: 40, width: 360, height: 360 };
+
+  const top = await page.screenshot({ clip: probe });
+
+  await page.evaluate(() => {
+    window.scrollTo(0, document.documentElement.scrollHeight * 0.5);
+  });
+  await page.waitForTimeout(900);
+  const middle = await page.screenshot({ clip: probe });
+
+  await page.evaluate(() => {
+    window.scrollTo(0, document.documentElement.scrollHeight);
+  });
+  await page.waitForTimeout(900);
+  const bottom = await page.screenshot({ clip: probe });
+
+  // The shader is scroll-driven: pixels in the top-left probe area must
+  // differ between the three scroll positions (otherwise the link scroll
+  // -> uProgress -> shader is broken).
+  expect(top.equals(middle), 'top vs middle should differ').toBe(false);
+  expect(middle.equals(bottom), 'middle vs bottom should differ').toBe(false);
+  expect(top.equals(bottom), 'top vs bottom should differ').toBe(false);
+});
+
 test('renders all sections statically with prefers-reduced-motion', async ({ browser }) => {
   const ctx = await browser.newContext({
     reducedMotion: 'reduce',

@@ -138,9 +138,10 @@ export const backgroundVert = /* glsl */ `
     vec3 launchOffset = launchDir * delayedFall * (0.5 + aDepth * 1.4);
 
     // ---- Depth parallax: deterministic function of uProgress ----
-    float parY = mix(0.8, 7.0, aDepth) * uProgress;
-    float parZ = mix(0.0, 2.5, aDepth) * uProgress;
-    float parX = (r4 - 0.5) * 0.6 * aDepth * uProgress;
+    // Cranked up so the "flying through" sensation is unmistakable.
+    float parY = mix(1.5, 12.0, aDepth) * uProgress;
+    float parZ = mix(0.5, 4.0, aDepth) * uProgress;
+    float parX = (r4 - 0.5) * 1.2 * aDepth * uProgress;
 
     // ---- Compose ----
     vec4 worldPos = instanceMatrix * vec4(pos, 1.0);
@@ -213,10 +214,23 @@ export const backgroundFrag = /* glsl */ `
 
     lit += vec3(1.80, 0.45, 0.10) * vEmber * 0.85;
 
-    // Hero (uProgress = 0) is heavily dimmed; full intensity by uProgress = 0.5.
-    // Lets the page load quietly and ramps the spectacle as the user scrolls.
-    float scrollIntensity = mix(0.12, 1.0, smoothstep(0.0, 0.5, uProgress));
+    // Bell-curve intensity: 5 % at hero, peaks at 100 % at uProgress = 0.45
+    // (mid-fragmentation is the spectacle), decays to 55 % at the bottom.
+    // The arc creates an obvious climax instead of a linear ramp.
+    float rampUp = smoothstep(0.0, 0.45, uProgress);
+    float rampDown = smoothstep(0.55, 1.0, uProgress);
+    float scrollIntensity = mix(0.05, 1.0, rampUp) * mix(1.0, 0.55, rampDown);
     lit *= scrollIntensity;
+
+    // Global colour journey driven by scroll: cool blue at the top, warm
+    // ember in the middle, cold dust at the bottom. Multiplicative tint so
+    // it stacks on top of the per-piece colour without overriding the rim.
+    vec3 tintCool = vec3(0.65, 0.80, 1.05);
+    vec3 tintWarm = vec3(1.45, 0.85, 0.55);
+    vec3 tintCold = vec3(0.45, 0.50, 0.65);
+    vec3 globalTint = mix(tintCool, tintWarm, smoothstep(0.0, 0.5, uProgress));
+    globalTint = mix(globalTint, tintCold, smoothstep(0.55, 1.0, uProgress));
+    lit *= globalTint;
 
     gl_FragColor = vec4(lit, 1.0);
   }
