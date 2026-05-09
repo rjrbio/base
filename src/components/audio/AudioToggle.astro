@@ -74,7 +74,26 @@ const { audioAvailable = false } = Astro.props;
     cursor: pointer;
     transition:
       color var(--dur-fast) var(--ease-out),
-      border-color var(--dur-fast) var(--ease-out);
+      border-color var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur-fast) var(--ease-out);
+  }
+
+  .audio-toggle:not(:disabled):not(.audio-toggle--on) {
+    color: color-mix(in srgb, var(--fg) 75%, transparent);
+    border-color: color-mix(in srgb, var(--fg) 26%, transparent);
+    animation: audio-toggle-breathe 4.2s ease-in-out infinite;
+  }
+
+  @keyframes audio-toggle-breathe {
+    0%,
+    100% {
+      box-shadow: 0 0 10px color-mix(in srgb, var(--fg) 6%, transparent);
+      border-color: color-mix(in srgb, var(--fg) 22%, transparent);
+    }
+    50% {
+      box-shadow: 0 0 18px color-mix(in srgb, var(--fg) 14%, transparent);
+      border-color: color-mix(in srgb, var(--fg) 38%, transparent);
+    }
   }
 
   .audio-toggle:hover,
@@ -141,8 +160,12 @@ const { audioAvailable = false } = Astro.props;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .audio-toggle--on .audio-toggle__bar {
+    .audio-toggle--on .audio-toggle__bar,
+    .audio-toggle:not(:disabled):not(.audio-toggle--on) {
       animation: none;
+    }
+    .audio-toggle:not(:disabled):not(.audio-toggle--on) {
+      box-shadow: 0 0 14px color-mix(in srgb, var(--fg) 10%, transparent);
     }
   }
 </style>

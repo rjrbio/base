@@ -85,21 +85,20 @@ test.describe('Projects Showcase', () => {
     page.on('pageerror', (err) => errors.push(`pageerror: ${err.message}`));
     page.on('console', (msg) => {
       if (msg.type() !== 'error') return;
-      const text = msg.text();
-      // 404s for asset probes (audio pending until assets ship) are expected.
-      if (/Failed to load resource.*404/i.test(text)) return;
-      errors.push(text);
+      errors.push(msg.text());
     });
     await page.goto('/');
     await page.waitForLoadState('networkidle');
     expect(errors).toEqual([]);
   });
 
-  test('audio toggle is rendered, sticky and disabled until assets ship', async ({ page }) => {
+  test('audio toggle is rendered, sticky and ready to play', async ({ page }) => {
+    await page.goto('/');
     const button = page.locator('[data-audio-toggle]');
     await expect(button).toBeVisible();
-    await expect(button).toBeDisabled();
-    await expect(button).toHaveAttribute('aria-label', /not available/i);
+    await expect(button).toBeEnabled();
+    await expect(button).toHaveAttribute('aria-label', /play ambient audio/i);
+    await expect(button).toHaveAttribute('aria-pressed', 'false');
     const position = await button.evaluate((el) => getComputedStyle(el).position);
     expect(position).toBe('fixed');
   });
