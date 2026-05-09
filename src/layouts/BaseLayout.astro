@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import '../styles/reset.css';
 import '../styles/tokens.css';
+import '../styles/fonts.css';
 import '../styles/globals.css';
 import AudioToggle from '../components/audio/AudioToggle.astro';
 
@@ -28,11 +29,19 @@ const audioAvailable = fs.existsSync(path.join(process.cwd(), 'public/audio/ambi
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=Inter:wght@400;500;600&display=swap"
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/inter-400-latin.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/bricolage-grotesque-700-latin.woff2"
+      crossorigin
     />
   </head>
   <body>
