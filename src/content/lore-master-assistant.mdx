@@ -5,16 +5,15 @@ slug: 'lore-master-assistant'
 palette: 'p1'
 ---
 
-import { Image } from 'astro:assets';
-
 import SubSection from '~/components/project/SubSection.astro';
+import ProjectImage from '~/components/project/ProjectImage.astro';
 
 import conceptImage from '../../media/projects/lore-master-assistant/concept.png';
 import sourcesImage from '../../media/projects/lore-master-assistant/sources.png';
 import inActionImage from '../../media/projects/lore-master-assistant/in-action.png';
 
 <SubSection id="concept" label="Concept">
-  <Image src={conceptImage} alt="Lore Master Assistant — concept overview" class="project-image" />
+  <ProjectImage src={conceptImage} alt="Lore Master Assistant — concept overview" />
   <p>
     General-purpose retrieval-augmented generation. Feed it knowledge, ask anything in natural
     language — the model never has to guess; it cites what you provided.
@@ -22,10 +21,9 @@ import inActionImage from '../../media/projects/lore-master-assistant/in-action.
 </SubSection>
 
 <SubSection id="sources" label="Sources & formats">
-  <Image
+  <ProjectImage
     src={sourcesImage}
     alt="Lore Master Assistant — supported sources and file formats"
-    class="project-image"
   />
   <p>
     Public URLs and local files (TXT, MD, PDF, DOCX) are parsed, chunked, and embedded into a single
@@ -34,10 +32,9 @@ import inActionImage from '../../media/projects/lore-master-assistant/in-action.
 </SubSection>
 
 <SubSection id="in-action" label="In action">
-  <Image
+  <ProjectImage
     src={inActionImage}
     alt="Lore Master Assistant — answering a question with sourced retrieval"
-    class="project-image"
   />
   <p>
     Built on MongoDB Atlas Vector Search with OpenAI-compatible embeddings. Answers stay grounded in

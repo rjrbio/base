@@ -1,4 +1,6 @@
 ---
+import fs from 'node:fs';
+import path from 'node:path';
 import '../styles/reset.css';
 import '../styles/tokens.css';
 import '../styles/globals.css';
@@ -13,6 +15,8 @@ const {
   title = 'Projects Showcase',
   description = 'Built from curiosity. Lore Master Assistant, Rule The Mando, Kintsugi: The Fall.',
 } = Astro.props;
+
+const audioAvailable = fs.existsSync(path.join(process.cwd(), 'public/audio/ambient.mp3'));
 ---
 
 <!doctype html>
@@ -22,6 +26,7 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="dark" />
     <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -33,7 +38,7 @@ const {
   <body>
     <canvas class="background-canvas" data-background-canvas aria-hidden="true"></canvas>
     <slot />
-    <AudioToggle />
+    <AudioToggle audioAvailable={audioAvailable} />
     <script>
       import { initBackground } from '../lib/three/BackgroundManager';
       import { initScroll } from '../lib/scroll/ScrollOrchestrator';

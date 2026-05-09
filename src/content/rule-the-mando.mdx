@@ -5,20 +5,15 @@ slug: 'rule-the-mando'
 palette: 'p2'
 ---
 
-import { Image } from 'astro:assets';
-
 import SubSection from '~/components/project/SubSection.astro';
+import ProjectImage from '~/components/project/ProjectImage.astro';
 
 import catalogImage from '../../media/projects/rule-the-mando/catalog.png';
 import makeItYoursImage from '../../media/projects/rule-the-mando/make-it-yours.png';
 import communityImage from '../../media/projects/rule-the-mando/community.png';
 
 <SubSection id="catalog" label="The catalog">
-  <Image
-    src={catalogImage}
-    alt="Rule The Mando — browsing the game catalog"
-    class="project-image"
-  />
+  <ProjectImage src={catalogImage} alt="Rule The Mando — browsing the game catalog" />
   <p>
     A catalog spanning the last thirty years of gaming. Filter by genre, platform, era, or release
     window — including titles that haven't shipped yet.
@@ -26,11 +21,7 @@ import communityImage from '../../media/projects/rule-the-mando/community.png';
 </SubSection>
 
 <SubSection id="make-it-yours" label="Make it yours">
-  <Image
-    src={makeItYoursImage}
-    alt="Rule The Mando — personal favorites and ratings"
-    class="project-image"
-  />
+  <ProjectImage src={makeItYoursImage} alt="Rule The Mando — personal favorites and ratings" />
   <p>
     Mark favorites, rate what you've played, leave a comment, build your own list. Your profile is
     yours — public or private, your call.
@@ -38,11 +29,7 @@ import communityImage from '../../media/projects/rule-the-mando/community.png';
 </SubSection>
 
 <SubSection id="community" label="Community">
-  <Image
-    src={communityImage}
-    alt="Rule The Mando — community lists and discussions"
-    class="project-image"
-  />
+  <ProjectImage src={communityImage} alt="Rule The Mando — community lists and discussions" />
   <p>
     See what others are playing, follow curators, surface hidden gems. Authenticated via Supabase;
     the data layer scales without ceremony.

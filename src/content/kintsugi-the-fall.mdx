@@ -5,9 +5,8 @@ slug: 'kintsugi-the-fall'
 palette: 'p3'
 ---
 
-import { Image } from 'astro:assets';
-
 import SubSection from '~/components/project/SubSection.astro';
+import ProjectImage from '~/components/project/ProjectImage.astro';
 
 import theFallImage from '../../media/projects/kintsugi-the-fall/the-fall.jpg';
 import brokenWorldImage from '../../media/projects/kintsugi-the-fall/broken-world.jpg';
@@ -16,10 +15,9 @@ import yourOrderImage from '../../media/projects/kintsugi-the-fall/your-order.jp
 import wontMendImage from '../../media/projects/kintsugi-the-fall/wont-mend.png';
 
 <SubSection id="the-fall" label="The fall">
-  <Image
+  <ProjectImage
     src={theFallImage}
     alt="Kintsugi: The Fall — concept art evoking the aftermath of a lost battle"
-    class="project-image"
   />
   <p>
     The epic battle against the villain already happened. We lost. Half the kingdom fell; the
@@ -29,10 +27,9 @@ import wontMendImage from '../../media/projects/kintsugi-the-fall/wont-mend.png'
 </SubSection>
 
 <SubSection id="broken-world" label="The broken world">
-  <Image
+  <ProjectImage
     src={brokenWorldImage}
     alt="Kintsugi: The Fall — a country in ruins after the fall"
-    class="project-image"
   />
   <p>
     A turn-based JRPG with active timing. Combat is precise, deliberate, and doesn't forgive
@@ -41,10 +38,9 @@ import wontMendImage from '../../media/projects/kintsugi-the-fall/wont-mend.png'
 </SubSection>
 
 <SubSection id="22-heroes" label="22 heroes">
-  <Image
+  <ProjectImage
     src={twentyTwoHeroesImage}
     alt="Kintsugi: The Fall — the twenty-two playable heroes, one per town"
-    class="project-image"
   />
   <p>
     Up to twenty-two playable heroes, each rooted in their own town. Recruit them as you push back
@@ -53,10 +49,9 @@ import wontMendImage from '../../media/projects/kintsugi-the-fall/wont-mend.png'
 </SubSection>
 
 <SubSection id="your-order" label="Your order">
-  <Image
+  <ProjectImage
     src={yourOrderImage}
     alt="Kintsugi: The Fall — map showing alternative liberation paths"
-    class="project-image"
   />
   <p>
     Liberate cities in the order you choose. Different routes meet different heroes, surface
@@ -65,10 +60,9 @@ import wontMendImage from '../../media/projects/kintsugi-the-fall/wont-mend.png'
 </SubSection>
 
 <SubSection id="wont-mend" label="Won't fully mend">
-  <Image
+  <ProjectImage
     src={wontMendImage}
     alt="Kintsugi: The Fall — kintsugi mending, gold lacquer over fracture"
-    class="project-image"
   />
   <p>
     Kintsugi: the art of repairing broken pottery with gold lacquer. The cracks remain visible,

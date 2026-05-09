@@ -1,11 +1,16 @@
 ---
+interface Props {
+  audioAvailable?: boolean;
+}
 
+const { audioAvailable = false } = Astro.props;
 ---
 
 <button
   class="audio-toggle"
   type="button"
   data-audio-toggle
+  data-audio-available={audioAvailable ? 'true' : 'false'}
   aria-pressed="false"
   aria-label="Audio not available yet"
   disabled
@@ -22,7 +27,7 @@
   import { getAudioState, initAudio, subscribeAudio } from '../../lib/audio/AudioManager';
 
   const button = document.querySelector<HTMLButtonElement>('[data-audio-toggle]');
-  if (button) {
+  if (button && button.dataset.audioAvailable === 'true') {
     button.addEventListener('click', () => {
       getAudioState().toggle();
     });
