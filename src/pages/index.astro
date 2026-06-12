@@ -6,7 +6,7 @@ import PortfolioCTA from '../components/cta/PortfolioCTA.astro';
 import ProjectSection from '../components/project/ProjectSection.astro';
 
 import LoreContent, { frontmatter as loreFM } from '../content/lore-master-assistant.mdx';
-import MandoContent, { frontmatter as mandoFM } from '../content/rule-the-mando.mdx';
+import GonnaBeContent, { frontmatter as gonnaBeFM } from '../content/gonna-be.mdx';
 import KintsugiContent, { frontmatter as kintsugiFM } from '../content/kintsugi-the-fall.mdx';
 ---
 
@@ -24,12 +24,12 @@ import KintsugiContent, { frontmatter as kintsugiFM } from '../content/kintsugi-
     </ProjectSection>
 
     <ProjectSection
-      slug={mandoFM.slug}
-      title={mandoFM.title}
-      tagline={mandoFM.tagline}
-      palette={mandoFM.palette}
+      slug={gonnaBeFM.slug}
+      title={gonnaBeFM.title}
+      tagline={gonnaBeFM.tagline}
+      palette={gonnaBeFM.palette}
     >
-      <MandoContent />
+      <GonnaBeContent />
     </ProjectSection>
 
     <ProjectSection
