@@ -193,10 +193,10 @@ export const backgroundVert = /* glsl */ `
     float midFlash = max(0.0, sin(baseAngle * 2.0));
     float flashStrength = midFlash * delayedFall * (1.0 - drift);
     float pulseGlow = uPulse * pulseWave;
-    c = mix(c, uPaletteEmber, max(flashStrength * 0.85, pulseGlow * 0.45));
+    c = mix(c, uPaletteEmber, max(flashStrength * 0.85, pulseGlow * 0.28));
 
     vColor = c;
-    vEmber = max(flashStrength, pulseGlow * 0.5);
+    vEmber = max(flashStrength, pulseGlow * 0.3);
     vDrift = drift;
     vFalling = delayedFall;
     vDepth = aDepth;

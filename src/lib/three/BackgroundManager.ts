@@ -274,7 +274,7 @@ export function initBackground(): void {
 
   // ---- Scroll → uProgress + camera parallax via GSAP ScrollTrigger ----
   gsap.registerPlugin(ScrollTrigger);
-  const trigger = ScrollTrigger.create({
+  ScrollTrigger.create({
     start: 0,
     end: 'max',
     onUpdate: (self) => {
@@ -291,7 +291,7 @@ export function initBackground(): void {
   // Refresh after layout settles (images, fonts) so start/end use the final
   // document height instead of a half-loaded snapshot.
   const refresh = (): void => {
-    trigger.refresh();
+    ScrollTrigger.refresh();
   };
   if (document.readyState === 'complete') {
     setTimeout(refresh, 100);
