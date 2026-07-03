@@ -11,6 +11,13 @@ export const backgroundVert = /* glsl */ `
   uniform float uProgress;
   uniform vec2 uMouseWorld;
   uniform float uReducedMotion;
+  uniform float uTension;
+  uniform float uFall;
+  uniform float uDrift;
+  uniform float uFlow;
+  uniform float uPulse;
+  uniform vec3 uPaletteBase;
+  uniform vec3 uPaletteEmber;
 
   varying vec3 vColor;
   varying float vBrightness1;
@@ -84,20 +91,24 @@ export const backgroundVert = /* glsl */ `
 
     float t_inner = uTime * (1.0 - uReducedMotion);
 
-    // ---- Tension phase ----
+    // ---- Breathing (always on); tension amplitude comes from the section ----
     vec2 q = warp(aGridPos * 0.30 + vec2(t_inner * 0.04, 0.0), t_inner);
     float breath = fbm7(aGridPos * 0.45 + q * 1.6 + t_inner * 0.07);
-    float tension = smoothstep(0.0, 0.3, uProgress);
+    float tension = uTension;
     float waveAmp = 0.18 + tension * 1.10;
     float zOffset = (breath - 0.5) * waveAmp;
     float pressureMask = smoothstep(0.55, 0.85, breath);
     zOffset += pressureMask * tension * 0.55 * (0.5 + r1 * 0.5);
 
-    float rawFall = smoothstep(0.3, 0.6, uProgress);
+    float rawFall = uFall;
 
-    // ---- Scale animation: pieces inflate during tension, compress during fragmentation ----
+    // ---- Scale animation; flow stretches pieces into horizontal streaks ----
     float scaleAnim = 1.0 + tension * 0.30 - rawFall * 0.35;
-    vec3 pos = position * vec3(aScale.x * scaleAnim, aScale.y * scaleAnim, 1.0);
+    vec3 pos = position * vec3(
+      aScale.x * scaleAnim * (1.0 + uFlow * 0.9),
+      aScale.y * scaleAnim,
+      1.0
+    );
     vec3 nrm = normal;
 
     // ---- Fragmentation: cascade from mouse focal ----
@@ -113,9 +124,8 @@ export const backgroundVert = /* glsl */ `
     float maxAngle = 2.6 + r3 * 1.2;
     float baseAngle = delayedFall * maxAngle;
 
-    // ---- Drift phase: scattered, slowly reattracted, slowly spinning ----
-    float drift = smoothstep(0.6, 1.0, uProgress);
-    // After the cascade, pieces keep tumbling slowly so they never feel frozen.
+    // ---- Drift: scattered, slowly reattracted, slowly spinning ----
+    float drift = uDrift;
     float continuousSpin = drift * t_inner * 0.45 * (0.5 + r3 * 0.5);
     float angle = baseAngle + continuousSpin;
     pos = rotateAxis(axis, angle) * pos;
@@ -128,8 +138,7 @@ export const backgroundVert = /* glsl */ `
     ) * drift;
     vec3 reattract = -vec3(aGridPos, 0.0) * drift * 0.18 * (0.4 + r4 * 0.6);
 
-    // ---- Radial launch during fragmentation: pieces explode outward in 3D ----
-    // Each piece picks its own direction; closer ones (depth ~1) fly further.
+    // ---- Radial launch during fragmentation ----
     vec3 launchDir = normalize(vec3(
       hash11(aSeed * 13.7) * 2.0 - 1.0,
       hash11(aSeed * 19.1) * 2.0 - 1.0,
@@ -137,16 +146,28 @@ export const backgroundVert = /* glsl */ `
     ));
     vec3 launchOffset = launchDir * delayedFall * (0.5 + aDepth * 1.4);
 
-    // ---- Depth parallax: deterministic function of uProgress ----
-    // Cranked up so the "flying through" sensation is unmistakable.
+    // ---- Depth parallax: still driven by global page progress (spatial) ----
     float parY = mix(1.5, 12.0, aDepth) * uProgress;
     float parZ = mix(0.5, 4.0, aDepth) * uProgress;
     float parX = (r4 - 0.5) * 1.2 * aDepth * uProgress;
 
+    // ---- Flow dialect: pieces align into lanes streaming horizontally ----
+    float laneSeed = hash11(aGridPos.y * 7.31);
+    float laneDir = laneSeed > 0.5 ? 1.0 : -1.0;
+    float laneSpeed = (0.4 + laneSeed * 0.9) * laneDir;
+    float wrappedX = mod(aGridPos.x + t_inner * laneSpeed + 8.0, 16.0) - 8.0;
+
+    // ---- Pulse dialect: ascending brightness waves lift the pieces ----
+    float pulseWave = sin(aGridPos.y * 0.55 - t_inner * 1.6 + aGridPos.x * 0.12) * 0.5 + 0.5;
+    pulseWave = smoothstep(0.55, 0.95, pulseWave);
+
     // ---- Compose ----
     vec4 worldPos = instanceMatrix * vec4(pos, 1.0);
+    worldPos.x = mix(worldPos.x, wrappedX, uFlow);
+    worldPos.y = mix(worldPos.y, aGridPos.y, uFlow * 0.6);
+    worldPos.y += uPulse * pulseWave * 0.22;
     worldPos.z += zOffset + parZ;
-    worldPos.y -= parY; // scroll down = pieces drift down (we're flying forward)
+    worldPos.y -= parY;
     worldPos.x += parX;
     worldPos.xyz += driftOffset + reattract + launchOffset;
 
@@ -162,24 +183,20 @@ export const backgroundVert = /* glsl */ `
     vec3 viewDir = vec3(0.0, 0.0, 1.0);
     vRim = pow(1.0 - max(0.0, dot(worldNormal, viewDir)), 2.2);
 
-    // ---- Color (the rim and ember do most of the talking) ----
+    // ---- Colour from the section palette ----
     vec3 colorVoid = vec3(0.001, 0.001, 0.006);
-    vec3 colorDeep = vec3(0.010, 0.004, 0.014);
-    vec3 colorMid = vec3(0.045, 0.015, 0.025);
-    vec3 colorBlood = vec3(0.40, 0.04, 0.08);
-    vec3 colorEmber = vec3(1.20, 0.30, 0.10);
-
-    vec3 c = mix(colorVoid, colorDeep, breath);
-    c = mix(c, colorMid, tension * 0.55);
-    c = mix(c, colorBlood, tension * pressureMask * 0.45);
+    vec3 c = mix(colorVoid, uPaletteBase * 0.35, breath);
+    c = mix(c, uPaletteBase, tension * 0.55);
+    c = mix(c, uPaletteBase * 1.8, tension * pressureMask * 0.45);
     c = mix(c, colorVoid * 1.2, drift * 0.7);
 
     float midFlash = max(0.0, sin(baseAngle * 2.0));
     float flashStrength = midFlash * delayedFall * (1.0 - drift);
-    c = mix(c, colorEmber, flashStrength * 0.85);
+    float pulseGlow = uPulse * pulseWave;
+    c = mix(c, uPaletteEmber, max(flashStrength * 0.85, pulseGlow * 0.45));
 
     vColor = c;
-    vEmber = flashStrength;
+    vEmber = max(flashStrength, pulseGlow * 0.5);
     vDrift = drift;
     vFalling = delayedFall;
     vDepth = aDepth;
@@ -189,7 +206,9 @@ export const backgroundVert = /* glsl */ `
 export const backgroundFrag = /* glsl */ `
   precision mediump float;
 
-  uniform float uProgress;
+  uniform vec3 uPaletteRim;
+  uniform vec3 uPaletteEmber;
+  uniform float uIntensity;
 
   varying vec3 vColor;
   varying float vBrightness1;
@@ -206,31 +225,16 @@ export const backgroundFrag = /* glsl */ `
     float ambient = 0.025;
     vec3 lit =
       color * (ambient + 0.40 * vBrightness1) +
-      vec3(0.45, 0.05, 0.07) * vBrightness2 * 0.28;
+      uPaletteRim * 0.35 * vBrightness2 * 0.28;
 
-    vec3 rimColor = vec3(1.30, 0.18, 0.08);
     float rimAtten = mix(0.6, 1.0, vDepth);
-    lit += rimColor * vRim * (0.50 + 0.55 * (1.0 - vDrift)) * rimAtten;
+    lit += uPaletteRim * vRim * (0.50 + 0.55 * (1.0 - vDrift)) * rimAtten;
 
-    lit += vec3(1.80, 0.45, 0.10) * vEmber * 0.85;
+    lit += uPaletteEmber * vEmber * 0.85;
 
-    // Bell-curve intensity: 5 % at hero, peaks at 100 % at uProgress = 0.45
-    // (mid-fragmentation is the spectacle), decays to 55 % at the bottom.
-    // The arc creates an obvious climax instead of a linear ramp.
-    float rampUp = smoothstep(0.0, 0.45, uProgress);
-    float rampDown = smoothstep(0.55, 1.0, uProgress);
-    float scrollIntensity = mix(0.05, 1.0, rampUp) * mix(1.0, 0.55, rampDown);
-    lit *= scrollIntensity;
-
-    // Global colour journey driven by scroll: cool blue at the top, warm
-    // ember in the middle, cold dust at the bottom. Multiplicative tint so
-    // it stacks on top of the per-piece colour without overriding the rim.
-    vec3 tintCool = vec3(0.65, 0.80, 1.05);
-    vec3 tintWarm = vec3(1.45, 0.85, 0.55);
-    vec3 tintCold = vec3(0.45, 0.50, 0.65);
-    vec3 globalTint = mix(tintCool, tintWarm, smoothstep(0.0, 0.5, uProgress));
-    globalTint = mix(globalTint, tintCold, smoothstep(0.55, 1.0, uProgress));
-    lit *= globalTint;
+    // Section-driven intensity from presets (0-1); 2.0 restores the old
+    // peak scale so kintsugi's 0.9 lands near the previous climax energy.
+    lit *= uIntensity * 2.0;
 
     gl_FragColor = vec4(lit, 1.0);
   }

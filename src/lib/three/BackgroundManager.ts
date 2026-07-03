@@ -7,6 +7,8 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 import { backgroundFrag, backgroundVert } from '../shaders/background';
+import { computeTargetState, createInitialState } from './sectionPresets';
+import type { BackgroundState } from './sectionPresets';
 
 let initialized = false;
 
@@ -87,12 +89,35 @@ export function initBackground(): void {
   const uMouse = new THREE.Vector2(0, 0);
   const uMouseWorld = new THREE.Vector2(0, 0);
 
+  const state = createInitialState();
+
   const uniforms = {
     uTime: { value: 0 },
     uProgress: { value: reducedMotion ? 0.5 : 0 },
     uMouse: { value: uMouse },
     uMouseWorld: { value: uMouseWorld },
     uReducedMotion: { value: reducedMotion ? 1 : 0 },
+    uTension: { value: state.tension },
+    uFall: { value: state.fall },
+    uDrift: { value: state.drift },
+    uFlow: { value: state.flow },
+    uPulse: { value: state.pulse },
+    uIntensity: { value: state.intensity },
+    uPaletteBase: { value: new THREE.Vector3(...state.paletteBase) },
+    uPaletteRim: { value: new THREE.Vector3(...state.paletteRim) },
+    uPaletteEmber: { value: new THREE.Vector3(...state.paletteEmber) },
+  };
+
+  const applyStateToUniforms = (s: BackgroundState): void => {
+    uniforms.uTension.value = s.tension;
+    uniforms.uFall.value = s.fall;
+    uniforms.uDrift.value = s.drift;
+    uniforms.uFlow.value = s.flow;
+    uniforms.uPulse.value = s.pulse;
+    uniforms.uIntensity.value = s.intensity;
+    uniforms.uPaletteBase.value.set(...s.paletteBase);
+    uniforms.uPaletteRim.value.set(...s.paletteRim);
+    uniforms.uPaletteEmber.value.set(...s.paletteEmber);
   };
 
   const material = new THREE.ShaderMaterial({
@@ -242,6 +267,7 @@ export function initBackground(): void {
   if (reducedMotion) {
     uniforms.uTime.value = 0;
     uniforms.uProgress.value = 0.5;
+    applyStateToUniforms(computeTargetState('hero', 0.5));
     composer.render();
     return;
   }
