@@ -7,7 +7,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 import { backgroundFrag, backgroundVert } from '../shaders/background';
-import { computeTargetState, createInitialState } from './sectionPresets';
+import { computeTargetState, createInitialState, smoothState } from './sectionPresets';
 import type { BackgroundState } from './sectionPresets';
 
 let initialized = false;
@@ -299,6 +299,21 @@ export function initBackground(): void {
     window.addEventListener('load', () => setTimeout(refresh, 100), { once: true });
   }
 
+  // ---- Section awareness: contiguous triggers hand over at viewport centre ----
+  let activeSectionId = 'hero';
+  let activeLocalProgress = 0;
+  document.querySelectorAll<HTMLElement>('[data-bg-section]').forEach((el, idx) => {
+    ScrollTrigger.create({
+      trigger: el,
+      start: idx === 0 ? 'top top' : 'top 50%',
+      end: 'bottom 50%',
+      onUpdate: (self) => {
+        activeSectionId = el.dataset.bgSection ?? 'hero';
+        activeLocalProgress = self.progress;
+      },
+    });
+  });
+
   // ---- Render loop ----
   const tick = (time: number): void => {
     if (running) {
@@ -311,6 +326,9 @@ export function initBackground(): void {
       uMouseWorld.set(uMouse.x * (PLANE_W / 2) * 0.65, uMouse.y * (PLANE_H / 2) * 0.65);
 
       uniforms.uTime.value = time * 0.001;
+
+      smoothState(state, computeTargetState(activeSectionId, activeLocalProgress), 0.06);
+      applyStateToUniforms(state);
 
       composer.render();
     }
