@@ -30,10 +30,12 @@
 ### Task 1: Presets de sección (módulo puro, TDD)
 
 **Files:**
+
 - Create: `src/lib/three/sectionPresets.ts`
 - Test: `tests/unit/section-presets.test.ts`
 
 **Interfaces:**
+
 - Consumes: nada (módulo puro, sin Three/DOM).
 - Produces:
   - `type RGB = [number, number, number]`
@@ -147,12 +149,7 @@ Crear `src/lib/three/sectionPresets.ts`:
 ```ts
 export type RGB = [number, number, number];
 
-export type SectionId =
-  | 'hero'
-  | 'lore-master-assistant'
-  | 'gonna-be'
-  | 'kintsugi-the-fall'
-  | 'cta';
+export type SectionId = 'hero' | 'lore-master-assistant' | 'gonna-be' | 'kintsugi-the-fall' | 'cta';
 
 export interface BackgroundState {
   paletteBase: RGB;
@@ -333,10 +330,12 @@ git commit -m "feat(frontend): add section presets module with motion arcs"
 Reescribe los shaders para consumir el estado por sección y conecta los uniforms en `BackgroundManager` con valores fijos del hero. Al terminar, la página se ve como un hero carmesí continuo (sin campana global) — la variación por sección llega en la Task 3.
 
 **Files:**
+
 - Modify: `src/lib/shaders/background.ts` (reemplazo completo de ambos shaders)
 - Modify: `src/lib/three/BackgroundManager.ts` (bloque de uniforms, reduced-motion, ScrollTrigger global)
 
 **Interfaces:**
+
 - Consumes: `computeTargetState`, `createInitialState`, `BackgroundState` de Task 1.
 - Produces: shaders que esperan los uniforms `uTension`, `uFall`, `uDrift`, `uFlow`, `uPulse`, `uIntensity` (float), `uPaletteBase`, `uPaletteRim`, `uPaletteEmber` (vec3), además de los existentes `uTime`, `uProgress` (solo parallax), `uMouseWorld`, `uReducedMotion`. Función local `applyStateToUniforms(state)` en `initBackground`.
 
@@ -598,36 +597,36 @@ import type { BackgroundState } from './sectionPresets';
 Reemplazar el bloque `const uniforms = { ... }` actual por:
 
 ```ts
-  const state = createInitialState();
+const state = createInitialState();
 
-  const uniforms = {
-    uTime: { value: 0 },
-    uProgress: { value: reducedMotion ? 0.5 : 0 },
-    uMouse: { value: uMouse },
-    uMouseWorld: { value: uMouseWorld },
-    uReducedMotion: { value: reducedMotion ? 1 : 0 },
-    uTension: { value: state.tension },
-    uFall: { value: state.fall },
-    uDrift: { value: state.drift },
-    uFlow: { value: state.flow },
-    uPulse: { value: state.pulse },
-    uIntensity: { value: state.intensity },
-    uPaletteBase: { value: new THREE.Vector3(...state.paletteBase) },
-    uPaletteRim: { value: new THREE.Vector3(...state.paletteRim) },
-    uPaletteEmber: { value: new THREE.Vector3(...state.paletteEmber) },
-  };
+const uniforms = {
+  uTime: { value: 0 },
+  uProgress: { value: reducedMotion ? 0.5 : 0 },
+  uMouse: { value: uMouse },
+  uMouseWorld: { value: uMouseWorld },
+  uReducedMotion: { value: reducedMotion ? 1 : 0 },
+  uTension: { value: state.tension },
+  uFall: { value: state.fall },
+  uDrift: { value: state.drift },
+  uFlow: { value: state.flow },
+  uPulse: { value: state.pulse },
+  uIntensity: { value: state.intensity },
+  uPaletteBase: { value: new THREE.Vector3(...state.paletteBase) },
+  uPaletteRim: { value: new THREE.Vector3(...state.paletteRim) },
+  uPaletteEmber: { value: new THREE.Vector3(...state.paletteEmber) },
+};
 
-  const applyStateToUniforms = (s: BackgroundState): void => {
-    uniforms.uTension.value = s.tension;
-    uniforms.uFall.value = s.fall;
-    uniforms.uDrift.value = s.drift;
-    uniforms.uFlow.value = s.flow;
-    uniforms.uPulse.value = s.pulse;
-    uniforms.uIntensity.value = s.intensity;
-    uniforms.uPaletteBase.value.set(...s.paletteBase);
-    uniforms.uPaletteRim.value.set(...s.paletteRim);
-    uniforms.uPaletteEmber.value.set(...s.paletteEmber);
-  };
+const applyStateToUniforms = (s: BackgroundState): void => {
+  uniforms.uTension.value = s.tension;
+  uniforms.uFall.value = s.fall;
+  uniforms.uDrift.value = s.drift;
+  uniforms.uFlow.value = s.flow;
+  uniforms.uPulse.value = s.pulse;
+  uniforms.uIntensity.value = s.intensity;
+  uniforms.uPaletteBase.value.set(...s.paletteBase);
+  uniforms.uPaletteRim.value.set(...s.paletteRim);
+  uniforms.uPaletteEmber.value.set(...s.paletteEmber);
+};
 ```
 
 - [ ] **Step 3: Frame estático de reduced-motion con estado explícito**
@@ -635,13 +634,13 @@ Reemplazar el bloque `const uniforms = { ... }` actual por:
 Reemplazar el bloque `if (reducedMotion) { ... }` (el que hace `composer.render(); return;`) por:
 
 ```ts
-  if (reducedMotion) {
-    uniforms.uTime.value = 0;
-    uniforms.uProgress.value = 0.5;
-    applyStateToUniforms(computeTargetState('hero', 0.5));
-    composer.render();
-    return;
-  }
+if (reducedMotion) {
+  uniforms.uTime.value = 0;
+  uniforms.uProgress.value = 0.5;
+  applyStateToUniforms(computeTargetState('hero', 0.5));
+  composer.render();
+  return;
+}
 ```
 
 - [ ] **Step 4: Verificar en navegador**
@@ -662,12 +661,14 @@ git commit -m "feat(frontend): dialect uniforms in background shader, static her
 ### Task 3: Consciencia de sección (triggers + suavizado por frame)
 
 **Files:**
+
 - Modify: `src/components/hero/Hero.astro:5` (atributo `data-bg-section`)
 - Modify: `src/components/project/ProjectSection.astro:12-17` (atributo)
 - Modify: `src/components/cta/PortfolioCTA.astro:7` (atributo)
 - Modify: `src/lib/three/BackgroundManager.ts` (triggers por sección + smoothing en tick)
 
 **Interfaces:**
+
 - Consumes: `computeTargetState`, `smoothState`, `applyStateToUniforms` (Task 2), atributo `data-bg-section` en el DOM.
 - Produces: convención DOM `data-bg-section="<id>"` con ids `hero | <slug de proyecto> | cta` (la consumen Task 6 para el color del progress y los e2e).
 
@@ -676,7 +677,7 @@ git commit -m "feat(frontend): dialect uniforms in background shader, static her
 En `Hero.astro`, la etiqueta de apertura pasa a:
 
 ```astro
-<section class="hero" data-bg-section="hero" aria-labelledby="hero-headline">
+<section class="hero" data-bg-section="hero" aria-labelledby="hero-headline"></section>
 ```
 
 En `ProjectSection.astro`:
@@ -689,12 +690,13 @@ En `ProjectSection.astro`:
   data-project={slug}
   data-bg-section={slug}
 >
+</section>
 ```
 
 En `PortfolioCTA.astro`:
 
 ```astro
-<section class="cta" data-bg-section="cta" aria-labelledby="cta-headline">
+<section class="cta" data-bg-section="cta" aria-labelledby="cta-headline"></section>
 ```
 
 - [ ] **Step 2: Triggers por sección en `BackgroundManager.ts`**
@@ -708,20 +710,20 @@ import { computeTargetState, createInitialState, smoothState } from './sectionPr
 Justo después del bloque del ScrollTrigger global existente (el de `start: 0, end: 'max'`), añadir:
 
 ```ts
-  // ---- Section awareness: contiguous triggers hand over at viewport centre ----
-  let activeSectionId = 'hero';
-  let activeLocalProgress = 0;
-  document.querySelectorAll<HTMLElement>('[data-bg-section]').forEach((el, idx) => {
-    ScrollTrigger.create({
-      trigger: el,
-      start: idx === 0 ? 'top top' : 'top 50%',
-      end: 'bottom 50%',
-      onUpdate: (self) => {
-        activeSectionId = el.dataset.bgSection ?? 'hero';
-        activeLocalProgress = self.progress;
-      },
-    });
+// ---- Section awareness: contiguous triggers hand over at viewport centre ----
+let activeSectionId = 'hero';
+let activeLocalProgress = 0;
+document.querySelectorAll<HTMLElement>('[data-bg-section]').forEach((el, idx) => {
+  ScrollTrigger.create({
+    trigger: el,
+    start: idx === 0 ? 'top top' : 'top 50%',
+    end: 'bottom 50%',
+    onUpdate: (self) => {
+      activeSectionId = el.dataset.bgSection ?? 'hero';
+      activeLocalProgress = self.progress;
+    },
   });
+});
 ```
 
 - [ ] **Step 3: Suavizado por frame en el tick**
@@ -729,8 +731,8 @@ Justo después del bloque del ScrollTrigger global existente (el de `start: 0, e
 Dentro de `const tick = (time: number): void => { if (running) { ... } }`, después de `uniforms.uTime.value = time * 0.001;` y antes de `composer.render();`, añadir:
 
 ```ts
-      smoothState(state, computeTargetState(activeSectionId, activeLocalProgress), 0.06);
-      applyStateToUniforms(state);
+smoothState(state, computeTargetState(activeSectionId, activeLocalProgress), 0.06);
+applyStateToUniforms(state);
 ```
 
 - [ ] **Step 4: Verificación visual por sección**
@@ -752,11 +754,13 @@ git commit -m "feat(frontend): section-aware background with smoothed dialect tr
 ### Task 4: Capa de partículas
 
 **Files:**
+
 - Create: `src/lib/shaders/particles.ts`
 - Create: `src/lib/three/ParticleField.ts`
 - Modify: `src/lib/three/BackgroundManager.ts` (integración + flag `data-particles`)
 
 **Interfaces:**
+
 - Consumes: el objeto `uniforms` compartido de Task 2 (los shaders de partículas declaran solo los que usan; Three ignora el resto).
 - Produces: `buildParticleField(uniforms: Record<string, THREE.IUniform>, count: number): THREE.Points`; el canvas expone `data-particles="<count>"` cuando hay partículas activas (lo consume el e2e de Task 7).
 
@@ -897,13 +901,13 @@ import { buildParticleField } from './ParticleField';
 Justo después de `scene.add(mesh);`, añadir:
 
 ```ts
-  // ---- Particle layer (skipped entirely under reduced motion) ----
-  if (!reducedMotion) {
-    const isMobile = window.matchMedia('(max-width: 768px)').matches;
-    const particleCount = isMobile ? 250 : 800;
-    scene.add(buildParticleField(uniforms, particleCount));
-    canvas.dataset.particles = String(particleCount);
-  }
+// ---- Particle layer (skipped entirely under reduced motion) ----
+if (!reducedMotion) {
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  const particleCount = isMobile ? 250 : 800;
+  scene.add(buildParticleField(uniforms, particleCount));
+  canvas.dataset.particles = String(particleCount);
+}
 ```
 
 - [ ] **Step 4: Verificar en navegador**
@@ -924,9 +928,11 @@ git commit -m "feat(frontend): section-tinted particle layer over the grid"
 ### Task 5: Tipografía cinematográfica (SplitText)
 
 **Files:**
+
 - Modify: `src/lib/scroll/ScrollOrchestrator.ts`
 
 **Interfaces:**
+
 - Consumes: DOM existente — `.hero__headline`, `[data-reveal="title"]`, `.project__tagline`, sección `#kintsugi-the-fall`. SplitText de `gsap/SplitText`.
 - Produces: nada nuevo para otras tareas. El early-return de reduced-motion existente cubre todo (los títulos quedan estáticos y visibles).
 
@@ -939,7 +945,7 @@ import { SplitText } from 'gsap/SplitText';
 ```
 
 ```ts
-  gsap.registerPlugin(ScrollTrigger, SplitText);
+gsap.registerPlugin(ScrollTrigger, SplitText);
 ```
 
 - [ ] **Step 2: Reemplazar el reveal genérico de títulos**
@@ -947,8 +953,8 @@ import { SplitText } from 'gsap/SplitText';
 Eliminar el bloque actual `const titles = document.querySelectorAll... titles.forEach((el) => { gsap.from(el, { opacity: 0, y: 60, ... }) });` y sustituirlo por:
 
 ```ts
-  initHeroEntrance();
-  initTitleReveals();
+initHeroEntrance();
+initTitleReveals();
 ```
 
 Añadir al final del archivo (nivel de módulo):
@@ -1076,6 +1082,7 @@ function initKintsugiReveal(el: HTMLElement, gold: string): void {
 
 Run: `pnpm dev --port 4321`
 Expected:
+
 - Hero: caracteres suben desde máscara con stagger; el punto final hace pop.
 - Títulos de Lore/GonnaBe/CTA: reveal por carácter al entrar en viewport, reversible al scrollear arriba.
 - Kintsugi: entra glitcheado (jitter+flicker), se recompone y una onda dorada recorre el título una sola vez.
@@ -1100,6 +1107,7 @@ git commit -m "feat(frontend): cinematic char reveals with kintsugi fracture gli
 ### Task 6: Indicador de progreso + CTA magnético + hover de polaroids
 
 **Files:**
+
 - Create: `src/components/progress/ScrollProgress.astro`
 - Modify: `src/layouts/BaseLayout.astro` (montar componente)
 - Modify: `src/components/cta/PortfolioCTA.astro` (underline redraw)
@@ -1107,6 +1115,7 @@ git commit -m "feat(frontend): cinematic char reveals with kintsugi fracture gli
 - Modify: `src/lib/scroll/ScrollOrchestrator.ts` (progress fill + magnetismo + hover)
 
 **Interfaces:**
+
 - Consumes: `data-bg-section` (Task 3) para el color del progreso; `.cta__link`, `.project-image` existentes.
 - Produces: DOM `[data-scroll-progress]` y `[data-scroll-progress-fill]` (los consume el e2e de Task 7).
 
@@ -1158,7 +1167,7 @@ import ScrollProgress from '../components/progress/ScrollProgress.astro';
 Y en el body, tras `<AudioToggle audioAvailable={audioAvailable} />`:
 
 ```astro
-    <ScrollProgress />
+<ScrollProgress />
 ```
 
 - [ ] **Step 3: Underline redraw en `PortfolioCTA.astro`**
@@ -1166,60 +1175,60 @@ Y en el body, tras `<AudioToggle audioAvailable={audioAvailable} />`:
 En el `<style>`, sustituir las reglas `.cta__link { ... }` (solo las propiedades `padding-bottom` y `border-bottom`) para usar `::after`. La regla `.cta__link` queda:
 
 ```css
-  .cta__link {
-    justify-self: center;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-2);
-    position: relative;
-    margin-top: var(--sp-8);
-    padding-bottom: var(--sp-1);
-    color: var(--fg);
-    font-size: var(--fs-h1);
-    font-weight: 600;
-    transition: color var(--dur-fast) var(--ease-out);
-  }
+.cta__link {
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  position: relative;
+  margin-top: var(--sp-8);
+  padding-bottom: var(--sp-1);
+  color: var(--fg);
+  font-size: var(--fs-h1);
+  font-weight: 600;
+  transition: color var(--dur-fast) var(--ease-out);
+}
 
-  .cta__link::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 2px;
-    background: currentColor;
-  }
+.cta__link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: currentColor;
+}
 
+.cta__link:hover::after,
+.cta__link:focus-visible::after {
+  animation: underline-redraw 0.6s var(--ease-out);
+}
+
+@keyframes underline-redraw {
+  0% {
+    transform: scaleX(1);
+    transform-origin: right;
+  }
+  45% {
+    transform: scaleX(0);
+    transform-origin: right;
+  }
+  50% {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  100% {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
   .cta__link:hover::after,
   .cta__link:focus-visible::after {
-    animation: underline-redraw 0.6s var(--ease-out);
+    animation: none;
   }
-
-  @keyframes underline-redraw {
-    0% {
-      transform: scaleX(1);
-      transform-origin: right;
-    }
-    45% {
-      transform: scaleX(0);
-      transform-origin: right;
-    }
-    50% {
-      transform: scaleX(0);
-      transform-origin: left;
-    }
-    100% {
-      transform: scaleX(1);
-      transform-origin: left;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .cta__link:hover::after,
-    .cta__link:focus-visible::after {
-      animation: none;
-    }
-  }
+}
 ```
 
 (La regla `.cta__link:hover, .cta__link:focus-visible { color/border-color }` pierde `border-color: var(--p3);` — el underline es `currentColor` y hereda el cambio.)
@@ -1229,17 +1238,17 @@ En el `<style>`, sustituir las reglas `.cta__link { ... }` (solo las propiedades
 Añadir al final del `<style>`:
 
 ```css
-  @media (hover: hover) {
-    .subsection__content :global(.project-image) {
-      transition: box-shadow var(--dur-mid) var(--ease-out);
-    }
-
-    .subsection__content :global(.project-image:hover) {
-      box-shadow:
-        0 24px 64px rgba(0, 0, 0, 0.65),
-        0 8px 20px rgba(0, 0, 0, 0.5);
-    }
+@media (hover: hover) {
+  .subsection__content :global(.project-image) {
+    transition: box-shadow var(--dur-mid) var(--ease-out);
   }
+
+  .subsection__content :global(.project-image:hover) {
+    box-shadow:
+      0 24px 64px rgba(0, 0, 0, 0.65),
+      0 8px 20px rgba(0, 0, 0, 0.5);
+  }
+}
 ```
 
 - [ ] **Step 5: JS en `ScrollOrchestrator.ts`**
@@ -1247,9 +1256,9 @@ Añadir al final del `<style>`:
 En `initScroll()`, tras `initTitleReveals();`, añadir:
 
 ```ts
-  initScrollProgress();
-  initMagneticCta();
-  initPolaroidHover();
+initScrollProgress();
+initMagneticCta();
+initPolaroidHover();
 ```
 
 Y al final del archivo:
@@ -1344,9 +1353,11 @@ git commit -m "feat(frontend): scroll progress accent line, magnetic cta, polaro
 ### Task 7: E2E (incluye fix de test obsoleto) y verificación final
 
 **Files:**
+
 - Modify: `tests/e2e/showcase.spec.ts`
 
 **Interfaces:**
+
 - Consumes: `data-particles` (Task 4), `[data-scroll-progress]` (Task 6), heading `GonnaBe` (contenido ya en main).
 
 - [ ] **Step 1: Arreglar el test obsoleto de headings**
@@ -1354,13 +1365,13 @@ git commit -m "feat(frontend): scroll progress accent line, magnetic cta, polaro
 En `tests/e2e/showcase.spec.ts:14`, el proyecto Rule The Mando fue sustituido por GonnaBe (commit `77f08b1`) y el test quedó obsoleto. Reemplazar:
 
 ```ts
-    await expect(page.getByRole('heading', { name: 'Rule The Mando' })).toBeVisible();
+await expect(page.getByRole('heading', { name: 'Rule The Mando' })).toBeVisible();
 ```
 
 por:
 
 ```ts
-    await expect(page.getByRole('heading', { name: 'GonnaBe' })).toBeVisible();
+await expect(page.getByRole('heading', { name: 'GonnaBe' })).toBeVisible();
 ```
 
 - [ ] **Step 2: Añadir tests nuevos**

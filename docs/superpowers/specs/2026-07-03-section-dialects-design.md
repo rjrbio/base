@@ -29,13 +29,13 @@ El fondo WebGL actual (grid fragmentado de ~2.560 piezas con rim carmesí y camp
 
 **Dialectos:**
 
-| Sección | Paleta | Comportamiento |
-| --- | --- | --- |
-| Hero | Carmesí actual | Tensión/respiración existente, `uIntensity` baja (~0.15): el título manda |
-| Lore | Azul-violeta `--p1` | `uFlow`: las piezas se alinean en carriles horizontales que se desplazan a velocidades distintas por fila (data stream estructural, no solo tinte) |
-| GonnaBe | Ámbar `--p2` | `uPulse`: olas de brillo ascendentes recorren el grid; las piezas se elevan sutilmente con cada pulso |
-| Kintsugi | Oro `--p3` | `uCrack`: la cascada de fractura existente, con bordes expuestos (rim) en oro — grietas doradas, no naranja quemado |
-| CTA | Fundido de los tres acentos → carmesí | Calma, cierre; `uIntensity` baja |
+| Sección  | Paleta                                | Comportamiento                                                                                                                                     |
+| -------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hero     | Carmesí actual                        | Tensión/respiración existente, `uIntensity` baja (~0.15): el título manda                                                                          |
+| Lore     | Azul-violeta `--p1`                   | `uFlow`: las piezas se alinean en carriles horizontales que se desplazan a velocidades distintas por fila (data stream estructural, no solo tinte) |
+| GonnaBe  | Ámbar `--p2`                          | `uPulse`: olas de brillo ascendentes recorren el grid; las piezas se elevan sutilmente con cada pulso                                              |
+| Kintsugi | Oro `--p3`                            | `uCrack`: la cascada de fractura existente, con bordes expuestos (rim) en oro — grietas doradas, no naranja quemado                                |
+| CTA      | Fundido de los tres acentos → carmesí | Calma, cierre; `uIntensity` baja                                                                                                                   |
 
 **Curva de intensidad.** Cada sección define su propio arco mediante `uLocalProgress`: pico breve durante el title reveal → retirada a soporte (≤0.5) durante los bloques de texto. Kintsugi conserva el pico global del sitio, siempre con techo 0.5 detrás de texto (regla BRAND.md).
 
@@ -76,18 +76,18 @@ Con **SplitText** (incluido en GSAP ≥3.13, sin dependencias nuevas), implement
 
 ## Archivos afectados
 
-| Archivo | Cambio |
-| --- | --- |
-| `src/lib/three/sectionPresets.ts` | Nuevo — presets puros por sección |
-| `src/lib/shaders/particles.ts` | Nuevo — shader de partículas |
-| `src/lib/shaders/background.ts` | Uniforms de sección, dialectos, retirada de campana global |
-| `src/lib/three/BackgroundManager.ts` | Section awareness, interpolación GSAP, capa Points |
-| `src/lib/scroll/ScrollOrchestrator.ts` | SplitText reveals, Kintsugi glitch, CTA magnético, emisión de sección activa |
-| `src/components/progress/ScrollProgress.astro` | Nuevo — indicador de progreso |
-| `src/components/cta/PortfolioCTA.astro` | Hook para magnetismo |
-| `src/components/project/SubSection.astro` | Hover de polaroids |
-| `tests/unit/section-presets.test.ts` | Nuevo |
-| `tests/e2e/showcase.spec.ts` | Casos nuevos |
+| Archivo                                        | Cambio                                                                       |
+| ---------------------------------------------- | ---------------------------------------------------------------------------- |
+| `src/lib/three/sectionPresets.ts`              | Nuevo — presets puros por sección                                            |
+| `src/lib/shaders/particles.ts`                 | Nuevo — shader de partículas                                                 |
+| `src/lib/shaders/background.ts`                | Uniforms de sección, dialectos, retirada de campana global                   |
+| `src/lib/three/BackgroundManager.ts`           | Section awareness, interpolación GSAP, capa Points                           |
+| `src/lib/scroll/ScrollOrchestrator.ts`         | SplitText reveals, Kintsugi glitch, CTA magnético, emisión de sección activa |
+| `src/components/progress/ScrollProgress.astro` | Nuevo — indicador de progreso                                                |
+| `src/components/cta/PortfolioCTA.astro`        | Hook para magnetismo                                                         |
+| `src/components/project/SubSection.astro`      | Hover de polaroids                                                           |
+| `tests/unit/section-presets.test.ts`           | Nuevo                                                                        |
+| `tests/e2e/showcase.spec.ts`                   | Casos nuevos                                                                 |
 
 ## Fuera de alcance
 
