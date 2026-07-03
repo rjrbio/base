@@ -7,6 +7,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 import { backgroundFrag, backgroundVert } from '../shaders/background';
+import { buildParticleField } from './ParticleField';
 import { computeTargetState, createInitialState, smoothState } from './sectionPresets';
 import type { BackgroundState } from './sectionPresets';
 
@@ -181,6 +182,14 @@ export function initBackground(): void {
   }
   mesh.instanceMatrix.needsUpdate = true;
   scene.add(mesh);
+
+  // ---- Particle layer (skipped entirely under reduced motion) ----
+  if (!reducedMotion) {
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    const particleCount = isMobile ? 250 : 800;
+    scene.add(buildParticleField(uniforms, particleCount));
+    canvas.dataset.particles = String(particleCount);
+  }
 
   // ---- EffectComposer: render -> bloom -> output ----
   const composer = new EffectComposer(renderer);
