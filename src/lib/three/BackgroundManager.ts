@@ -268,6 +268,7 @@ export function initBackground(): void {
     uniforms.uTime.value = 0;
     uniforms.uProgress.value = 0.5;
     applyStateToUniforms(computeTargetState('hero', 0.5));
+    bloomPass.strength = 0.85;
     composer.render();
     return;
   }
@@ -329,6 +330,7 @@ export function initBackground(): void {
 
       smoothState(state, computeTargetState(activeSectionId, activeLocalProgress), 0.06);
       applyStateToUniforms(state);
+      bloomPass.strength = state.bloom;
 
       composer.render();
     }

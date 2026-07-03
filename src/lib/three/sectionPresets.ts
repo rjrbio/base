@@ -12,6 +12,7 @@ export interface BackgroundState {
   flow: number;
   pulse: number;
   intensity: number;
+  bloom: number;
 }
 
 interface SectionPreset {
@@ -24,6 +25,8 @@ interface SectionPreset {
   intensityTitle: number;
   /** Intensity behind body text (localProgress ≳ 0.35). Must stay ≤ 0.5 (BRAND.md). */
   intensityBody: number;
+  /** UnrealBloomPass strength while this section is active. */
+  bloom: number;
 }
 
 const mix = (a: number, b: number, t: number): number => a + (b - a) * t;
@@ -44,6 +47,7 @@ const PRESETS: Record<SectionId, SectionPreset> = {
     pulse: 0,
     intensityTitle: 0.15,
     intensityBody: 0.35,
+    bloom: 0.85,
   },
   'lore-master-assistant': {
     paletteBase: [0.02, 0.028, 0.075],
@@ -53,6 +57,7 @@ const PRESETS: Record<SectionId, SectionPreset> = {
     pulse: 0,
     intensityTitle: 0.6,
     intensityBody: 0.4,
+    bloom: 0.85,
   },
   'gonna-be': {
     paletteBase: [0.045, 0.022, 0.01],
@@ -62,15 +67,17 @@ const PRESETS: Record<SectionId, SectionPreset> = {
     pulse: 1,
     intensityTitle: 0.5,
     intensityBody: 0.35,
+    bloom: 0.65,
   },
   'kintsugi-the-fall': {
     paletteBase: [0.05, 0.038, 0.02],
-    paletteRim: [1.45, 1.0, 0.4],
-    paletteEmber: [1.7, 1.3, 0.55],
+    paletteRim: [1.15, 0.8, 0.33],
+    paletteEmber: [1.45, 1.1, 0.47],
     flow: 0,
     pulse: 0,
-    intensityTitle: 0.7,
-    intensityBody: 0.35,
+    intensityTitle: 0.65,
+    intensityBody: 0.32,
+    bloom: 0.5,
   },
   cta: {
     paletteBase: [0.04, 0.02, 0.03],
@@ -80,6 +87,7 @@ const PRESETS: Record<SectionId, SectionPreset> = {
     pulse: 0,
     intensityTitle: 0.5,
     intensityBody: 0.3,
+    bloom: 0.85,
   },
 };
 
@@ -130,6 +138,7 @@ export function computeTargetState(id: string, localProgress: number): Backgroun
     flow: preset.flow,
     pulse: preset.pulse,
     intensity,
+    bloom: preset.bloom,
   };
 }
 
@@ -147,7 +156,7 @@ export function smoothState(
   alpha: number,
 ): void {
   const k = Math.min(1, Math.max(0, alpha));
-  const scalarKeys = ['tension', 'fall', 'drift', 'flow', 'pulse', 'intensity'] as const;
+  const scalarKeys = ['tension', 'fall', 'drift', 'flow', 'pulse', 'intensity', 'bloom'] as const;
   for (const key of scalarKeys) {
     current[key] = k === 1 ? target[key] : current[key] + (target[key] - current[key]) * k;
   }
