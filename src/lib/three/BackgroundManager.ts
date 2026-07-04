@@ -7,6 +7,9 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 import { backgroundFrag, backgroundVert } from '../shaders/background';
+import { buildParticleField } from './ParticleField';
+import { computeTargetState, createInitialState, smoothState } from './sectionPresets';
+import type { BackgroundState } from './sectionPresets';
 
 let initialized = false;
 
@@ -87,12 +90,35 @@ export function initBackground(): void {
   const uMouse = new THREE.Vector2(0, 0);
   const uMouseWorld = new THREE.Vector2(0, 0);
 
+  const state = createInitialState();
+
   const uniforms = {
     uTime: { value: 0 },
     uProgress: { value: reducedMotion ? 0.5 : 0 },
     uMouse: { value: uMouse },
     uMouseWorld: { value: uMouseWorld },
     uReducedMotion: { value: reducedMotion ? 1 : 0 },
+    uTension: { value: state.tension },
+    uFall: { value: state.fall },
+    uDrift: { value: state.drift },
+    uFlow: { value: state.flow },
+    uPulse: { value: state.pulse },
+    uIntensity: { value: state.intensity },
+    uPaletteBase: { value: new THREE.Vector3(...state.paletteBase) },
+    uPaletteRim: { value: new THREE.Vector3(...state.paletteRim) },
+    uPaletteEmber: { value: new THREE.Vector3(...state.paletteEmber) },
+  };
+
+  const applyStateToUniforms = (s: BackgroundState): void => {
+    uniforms.uTension.value = s.tension;
+    uniforms.uFall.value = s.fall;
+    uniforms.uDrift.value = s.drift;
+    uniforms.uFlow.value = s.flow;
+    uniforms.uPulse.value = s.pulse;
+    uniforms.uIntensity.value = s.intensity;
+    uniforms.uPaletteBase.value.set(...s.paletteBase);
+    uniforms.uPaletteRim.value.set(...s.paletteRim);
+    uniforms.uPaletteEmber.value.set(...s.paletteEmber);
   };
 
   const material = new THREE.ShaderMaterial({
@@ -156,6 +182,14 @@ export function initBackground(): void {
   }
   mesh.instanceMatrix.needsUpdate = true;
   scene.add(mesh);
+
+  // ---- Particle layer (skipped entirely under reduced motion) ----
+  if (!reducedMotion) {
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    const particleCount = isMobile ? 250 : 800;
+    scene.add(buildParticleField(uniforms, particleCount));
+    canvas.dataset.particles = String(particleCount);
+  }
 
   // ---- EffectComposer: render -> bloom -> output ----
   const composer = new EffectComposer(renderer);
@@ -242,13 +276,16 @@ export function initBackground(): void {
   if (reducedMotion) {
     uniforms.uTime.value = 0;
     uniforms.uProgress.value = 0.5;
+    const staticState = computeTargetState('hero', 0.5);
+    applyStateToUniforms(staticState);
+    bloomPass.strength = staticState.bloom;
     composer.render();
     return;
   }
 
   // ---- Scroll → uProgress + camera parallax via GSAP ScrollTrigger ----
   gsap.registerPlugin(ScrollTrigger);
-  const trigger = ScrollTrigger.create({
+  ScrollTrigger.create({
     start: 0,
     end: 'max',
     onUpdate: (self) => {
@@ -265,13 +302,29 @@ export function initBackground(): void {
   // Refresh after layout settles (images, fonts) so start/end use the final
   // document height instead of a half-loaded snapshot.
   const refresh = (): void => {
-    trigger.refresh();
+    ScrollTrigger.refresh();
   };
   if (document.readyState === 'complete') {
     setTimeout(refresh, 100);
   } else {
     window.addEventListener('load', () => setTimeout(refresh, 100), { once: true });
   }
+
+  // ---- Section awareness: contiguous triggers hand over at viewport centre ----
+  let activeSectionId = 'hero';
+  let activeLocalProgress = 0;
+  document.querySelectorAll<HTMLElement>('[data-bg-section]').forEach((el, idx) => {
+    ScrollTrigger.create({
+      trigger: el,
+      start: idx === 0 ? 'top top' : 'top 50%',
+      end: 'bottom 50%',
+      onUpdate: (self) => {
+        if (!self.isActive) return;
+        activeSectionId = el.dataset.bgSection ?? 'hero';
+        activeLocalProgress = self.progress;
+      },
+    });
+  });
 
   // ---- Render loop ----
   const tick = (time: number): void => {
@@ -285,6 +338,10 @@ export function initBackground(): void {
       uMouseWorld.set(uMouse.x * (PLANE_W / 2) * 0.65, uMouse.y * (PLANE_H / 2) * 0.65);
 
       uniforms.uTime.value = time * 0.001;
+
+      smoothState(state, computeTargetState(activeSectionId, activeLocalProgress), 0.06);
+      applyStateToUniforms(state);
+      bloomPass.strength = state.bloom;
 
       composer.render();
     }

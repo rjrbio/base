@@ -6,11 +6,11 @@ Sitio web animado de presentación de proyectos. Single-page con scroll storytel
 
 Tres proyectos, cada uno con su propio acento cromático y narrativa:
 
-| # | Proyecto | Qué es |
-|---|---|---|
-| 1 | **Lore Master Assistant** | RAG fullstack de propósito general sobre MongoDB Atlas Vector Search. Ingiere URLs y archivos (TXT/MD/PDF/DOCX); responde con cita. |
-| 2 | **Rule The Mando** | Plataforma de descubrimiento, clasificación y comunidad sobre videojuegos. Autenticación con Supabase. |
-| 3 | **Kintsugi: The Fall** | Videojuego JRPG por turnos con timing activo, en desarrollo. |
+| #   | Proyecto                  | Qué es                                                                                                                              |
+| --- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Lore Master Assistant** | RAG fullstack de propósito general sobre MongoDB Atlas Vector Search. Ingiere URLs y archivos (TXT/MD/PDF/DOCX); responde con cita. |
+| 2   | **Rule The Mando**        | Plataforma de descubrimiento, clasificación y comunidad sobre videojuegos. Autenticación con Supabase.                              |
+| 3   | **Kintsugi: The Fall**    | Videojuego JRPG por turnos con timing activo, en desarrollo.                                                                        |
 
 ## Stack
 

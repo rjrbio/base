@@ -11,7 +11,7 @@ test.describe('Projects Showcase', () => {
 
   test('shows the three project headings', async ({ page }) => {
     await expect(page.getByRole('heading', { name: 'Lore Master Assistant' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Rule The Mando' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'GonnaBe' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Kintsugi: The Fall' })).toBeVisible();
   });
 
@@ -173,4 +173,43 @@ test('renders all sections statically with prefers-reduced-motion', async ({ bro
   } finally {
     await ctx.close();
   }
+});
+
+test('scroll progress indicator exists and is hidden from the a11y tree', async ({ page }) => {
+  await page.goto('/');
+  const progress = page.locator('[data-scroll-progress]');
+  await expect(progress).toHaveCount(1);
+  await expect(progress).toHaveAttribute('aria-hidden', 'true');
+});
+
+test('background canvas reports active particles on desktop', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+  const flag = await page.locator('[data-background-canvas]').getAttribute('data-particles');
+  expect(Number(flag)).toBeGreaterThan(0);
+});
+
+test('reduced motion disables the particle layer', async ({ browser }) => {
+  const ctx = await browser.newContext({
+    reducedMotion: 'reduce',
+    baseURL: 'http://localhost:4321',
+  });
+  const page = await ctx.newPage();
+  try {
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+    const flag = await page.locator('[data-background-canvas]').getAttribute('data-particles');
+    expect(flag).toBeNull();
+  } finally {
+    await ctx.close();
+  }
+});
+
+test('kintsugi title settles fully readable after its glitch reveal', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#kintsugi-the-fall').scrollIntoViewIfNeeded();
+  await page.waitForTimeout(3000);
+  const title = page.locator('#kintsugi-the-fall .project__title');
+  await expect(title).toBeVisible();
+  await expect(title).toHaveAttribute('aria-label', 'Kintsugi: The Fall');
 });

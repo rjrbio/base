@@ -6,6 +6,7 @@ import '../styles/tokens.css';
 import '../styles/fonts.css';
 import '../styles/globals.css';
 import AudioToggle from '../components/audio/AudioToggle.astro';
+import ScrollProgress from '../components/progress/ScrollProgress.astro';
 
 interface Props {
   title?: string;
@@ -48,6 +49,7 @@ const audioAvailable = fs.existsSync(path.join(process.cwd(), 'public/audio/ambi
     <canvas class="background-canvas" data-background-canvas aria-hidden="true"></canvas>
     <slot />
     <AudioToggle audioAvailable={audioAvailable} />
+    <ScrollProgress />
     <script>
       import { initBackground } from '../lib/three/BackgroundManager';
       import { initScroll } from '../lib/scroll/ScrollOrchestrator';

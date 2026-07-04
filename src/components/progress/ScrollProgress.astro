@@ -1,0 +1,32 @@
+<div class="scroll-progress" aria-hidden="true" data-scroll-progress>
+  <div class="scroll-progress__fill" data-scroll-progress-fill></div>
+</div>
+
+<style>
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 2px;
+    height: 100vh;
+    z-index: 10;
+    background: color-mix(in srgb, var(--fg) 8%, transparent);
+    pointer-events: none;
+  }
+
+  .scroll-progress__fill {
+    width: 100%;
+    height: 100%;
+    background: var(--fg-muted);
+    transform: scaleY(0);
+    transform-origin: top;
+    will-change: transform;
+    transition: background-color 1s var(--ease-out);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-progress {
+      display: none;
+    }
+  }
+</style>
