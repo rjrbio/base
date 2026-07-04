@@ -155,6 +155,13 @@ function initTitleReveals(): void {
   });
 }
 
+function hexToRgba(hex: string, alpha: number): string {
+  const h = hex.replace('#', '');
+  const full = h.length === 3 ? [...h].map((c) => c + c).join('') : h;
+  const n = parseInt(full, 16);
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
+}
+
 // Fracture glitch + one-shot golden sweep: the typographic kintsugi crack.
 function initKintsugiReveal(el: HTMLElement, gold: string): void {
   const split = new SplitText(el, { type: 'chars' });
@@ -188,7 +195,7 @@ function initKintsugiReveal(el: HTMLElement, gold: string): void {
       chars,
       {
         color: gold,
-        textShadow: '0 0 24px rgba(212, 166, 74, 0.55)',
+        textShadow: `0 0 24px ${hexToRgba(gold, 0.55)}`,
         duration: 0.16,
         stagger: 0.02,
         ease: 'none',
@@ -199,7 +206,7 @@ function initKintsugiReveal(el: HTMLElement, gold: string): void {
       chars,
       {
         color: 'var(--fg)',
-        textShadow: '0 0 0px rgba(212, 166, 74, 0)',
+        textShadow: `0 0 0px ${hexToRgba(gold, 0)}`,
         duration: 0.4,
         stagger: 0.02,
         ease: 'power2.out',
