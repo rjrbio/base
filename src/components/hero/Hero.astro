@@ -31,6 +31,23 @@ const headline = 'BUILT FROM CURIOSITY.';
     letter-spacing: 0.4em;
     text-transform: uppercase;
     color: var(--fg-muted);
+    animation: scroll-pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes scroll-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__scroll {
+      animation: none;
+    }
   }
 
   @media (max-width: 768px) {

@@ -232,8 +232,8 @@ export const backgroundFrag = /* glsl */ `
 
     lit += uPaletteEmber * vEmber * 0.85;
 
-    // Section-driven intensity from presets (0-1); 2.0 restores the old
-    // peak scale so kintsugi's 0.9 lands near the previous climax energy.
+    // Section-driven intensity from presets (0-1); 2.0 maps the preset range
+    // onto the shader's working scale (kintsugi title peaks at 0.65).
     lit *= uIntensity * 2.0;
 
     gl_FragColor = vec4(lit, 1.0);

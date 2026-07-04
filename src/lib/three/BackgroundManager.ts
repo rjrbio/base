@@ -276,8 +276,9 @@ export function initBackground(): void {
   if (reducedMotion) {
     uniforms.uTime.value = 0;
     uniforms.uProgress.value = 0.5;
-    applyStateToUniforms(computeTargetState('hero', 0.5));
-    bloomPass.strength = 0.85;
+    const staticState = computeTargetState('hero', 0.5);
+    applyStateToUniforms(staticState);
+    bloomPass.strength = staticState.bloom;
     composer.render();
     return;
   }
@@ -318,6 +319,7 @@ export function initBackground(): void {
       start: idx === 0 ? 'top top' : 'top 50%',
       end: 'bottom 50%',
       onUpdate: (self) => {
+        if (!self.isActive) return;
         activeSectionId = el.dataset.bgSection ?? 'hero';
         activeLocalProgress = self.progress;
       },
