@@ -129,4 +129,16 @@ const { id, label } = Astro.props;
       0 4px 12px rgba(0, 0, 0, 0.4);
     will-change: transform;
   }
+
+  @media (hover: hover) {
+    .subsection__content :global(.project-image) {
+      transition: box-shadow var(--dur-mid) var(--ease-out);
+    }
+
+    .subsection__content :global(.project-image:hover) {
+      box-shadow:
+        0 24px 64px rgba(0, 0, 0, 0.65),
+        0 8px 20px rgba(0, 0, 0, 0.5);
+    }
+  }
 </style>

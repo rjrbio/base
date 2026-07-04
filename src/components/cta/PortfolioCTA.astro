@@ -37,21 +37,33 @@ const portfolioUrl = 'https://jdev.alwaysdata.net';
     display: inline-flex;
     align-items: center;
     gap: var(--sp-2);
+    position: relative;
     margin-top: var(--sp-8);
     padding-bottom: var(--sp-1);
-    border-bottom: 2px solid var(--fg);
     color: var(--fg);
     font-size: var(--fs-h1);
     font-weight: 600;
-    transition:
-      color var(--dur-fast) var(--ease-out),
-      border-color var(--dur-fast) var(--ease-out);
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .cta__link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: currentColor;
+  }
+
+  .cta__link:hover::after,
+  .cta__link:focus-visible::after {
+    animation: underline-redraw 0.6s var(--ease-out);
   }
 
   .cta__link:hover,
   .cta__link:focus-visible {
     color: var(--p3);
-    border-color: var(--p3);
   }
 
   .cta__arrow {
@@ -61,6 +73,32 @@ const portfolioUrl = 'https://jdev.alwaysdata.net';
   .cta__link:hover .cta__arrow,
   .cta__link:focus-visible .cta__arrow {
     transform: translateX(4px);
+  }
+
+  @keyframes underline-redraw {
+    0% {
+      transform: scaleX(1);
+      transform-origin: right;
+    }
+    45% {
+      transform: scaleX(0);
+      transform-origin: right;
+    }
+    50% {
+      transform: scaleX(0);
+      transform-origin: left;
+    }
+    100% {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cta__link:hover::after,
+    .cta__link:focus-visible::after {
+      animation: none;
+    }
   }
 
   @media (max-width: 768px) {

@@ -31,6 +31,9 @@ export function initScroll(): void {
 
   initHeroEntrance();
   initTitleReveals();
+  initScrollProgress();
+  initMagneticCta();
+  initPolaroidHover();
 
   const subsections = document.querySelectorAll<HTMLElement>('[data-pinning-id]');
   subsections.forEach((el) => {
@@ -213,4 +216,74 @@ function initKintsugiReveal(el: HTMLElement, gold: string): void {
       },
       '<0.18',
     );
+}
+
+function initScrollProgress(): void {
+  const fill = document.querySelector<HTMLElement>('[data-scroll-progress-fill]');
+  if (!fill) return;
+
+  ScrollTrigger.create({
+    start: 0,
+    end: 'max',
+    onUpdate: (self) => {
+      fill.style.transform = `scaleY(${self.progress})`;
+    },
+  });
+
+  const accents: Record<string, string> = {
+    'lore-master-assistant': 'var(--p1)',
+    'gonna-be': 'var(--p2)',
+    'kintsugi-the-fall': 'var(--p3)',
+  };
+  document.querySelectorAll<HTMLElement>('[data-bg-section]').forEach((el) => {
+    ScrollTrigger.create({
+      trigger: el,
+      start: 'top 50%',
+      end: 'bottom 50%',
+      onToggle: (self) => {
+        if (self.isActive) {
+          fill.style.background = accents[el.dataset.bgSection ?? ''] ?? 'var(--fg-muted)';
+        }
+      },
+    });
+  });
+}
+
+function initMagneticCta(): void {
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  const link = document.querySelector<HTMLElement>('.cta__link');
+  if (!link) return;
+  const xTo = gsap.quickTo(link, 'x', { duration: 0.4, ease: 'power3.out' });
+  const yTo = gsap.quickTo(link, 'y', { duration: 0.4, ease: 'power3.out' });
+  window.addEventListener(
+    'mousemove',
+    (e) => {
+      const r = link.getBoundingClientRect();
+      const dx = e.clientX - (r.left + r.width / 2);
+      const dy = e.clientY - (r.top + r.height / 2);
+      const dist = Math.hypot(dx, dy);
+      const radius = Math.max(r.width, r.height) / 2 + 80;
+      if (dist < radius && dist > 0) {
+        const pull = (1 - dist / radius) * 12;
+        xTo((dx / dist) * pull);
+        yTo((dy / dist) * pull);
+      } else {
+        xTo(0);
+        yTo(0);
+      }
+    },
+    { passive: true },
+  );
+}
+
+function initPolaroidHover(): void {
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  document.querySelectorAll<HTMLElement>('.project-image').forEach((img) => {
+    img.addEventListener('mouseenter', () => {
+      gsap.to(img, { scale: 1.03, duration: 0.35, ease: 'power2.out' });
+    });
+    img.addEventListener('mouseleave', () => {
+      gsap.to(img, { scale: 1, duration: 0.45, ease: 'power2.out' });
+    });
+  });
 }
