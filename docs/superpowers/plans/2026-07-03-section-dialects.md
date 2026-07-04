@@ -24,6 +24,7 @@
 2. El barrido dorado de Kintsugi se implementa como onda de color por carácter (stagger GSAP) en lugar de `background-clip: text` — ese enfoque es frágil con los spans transformados de SplitText.
 3. En el hover de polaroids se omite "tilt hacia 0" (pelearía con la rotación scrubbed del parallax); quedan escala + sombra.
 4. Con reduced-motion el indicador de progreso se oculta (`display: none`) en vez de mostrarse vacío estático.
+5. Bloom por sección: `BackgroundState` gana un campo `bloom` (UnrealBloomPass strength interpolado con el resto del estado) y la paleta kintsugi se atenuó a cerámica oscura (intensityTitle 0.65) tras la verificación visual — los valores literales de los presets en Task 1 quedan superseded por los commits bb01f29/b58d214.
 
 ---
 
