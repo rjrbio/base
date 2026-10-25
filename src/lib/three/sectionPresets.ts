@@ -1,6 +1,11 @@
 export type RGB = [number, number, number];
 
-export type SectionId = 'hero' | 'lore-master-assistant' | 'gonna-be' | 'kintsugi-the-fall' | 'cta';
+export type SectionId =
+  | 'hero'
+  | 'lore-master-assistant'
+  | 'fokkelman'
+  | 'kintsugi-the-fall'
+  | 'cta';
 
 export interface BackgroundState {
   paletteBase: RGB;
@@ -59,15 +64,15 @@ const PRESETS: Record<SectionId, SectionPreset> = {
     intensityBody: 0.4,
     bloom: 0.85,
   },
-  'gonna-be': {
-    paletteBase: [0.045, 0.022, 0.01],
-    paletteRim: [1.55, 0.75, 0.28],
-    paletteEmber: [1.7, 0.9, 0.35],
+  fokkelman: {
+    paletteBase: [0.008, 0.024, 0.024],
+    paletteRim: [0.22, 0.95, 0.88],
+    paletteEmber: [0.25, 1.05, 0.95],
     flow: 0,
-    pulse: 1,
-    intensityTitle: 0.5,
-    intensityBody: 0.35,
-    bloom: 0.65,
+    pulse: 0,
+    intensityTitle: 0.3,
+    intensityBody: 0.3,
+    bloom: 0.5,
   },
   'kintsugi-the-fall': {
     paletteBase: [0.05, 0.038, 0.02],
@@ -116,6 +121,11 @@ export function computeTargetState(id: string, localProgress: number): Backgroun
     tension = mix(0.8, 0.2, smoothstep(0.0, 0.3, lp));
     fall = smoothstep(0.05, 0.55, lp);
     drift = smoothstep(0.55, 0.95, lp);
+  } else if (id === 'fokkelman') {
+    // Settle: the kintsugi fall played backwards. Pieces start scattered like
+    // loose memories and regroup into the grid before the body text is read.
+    tension = 0.3;
+    fall = 0.9 * (1 - smoothstep(0.05, 0.4, lp));
   } else if (id === 'cta') {
     // "Won't fully mend": the field stays partially broken at the close.
     tension = 0.2;

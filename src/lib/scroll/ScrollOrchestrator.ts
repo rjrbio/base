@@ -232,7 +232,7 @@ function initScrollProgress(): void {
 
   const accents: Record<string, string> = {
     'lore-master-assistant': 'var(--p1)',
-    'gonna-be': 'var(--p2)',
+    fokkelman: 'var(--p2)',
     'kintsugi-the-fall': 'var(--p3)',
   };
   document.querySelectorAll<HTMLElement>('[data-bg-section]').forEach((el) => {

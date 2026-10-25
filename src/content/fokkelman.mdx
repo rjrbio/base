@@ -1,0 +1,32 @@
+---
+title: 'Fokkelman'
+tagline: 'Over 3,600 family photographs, behind one password.'
+slug: 'fokkelman'
+palette: 'p2'
+---
+
+import SubSection from '~/components/project/SubSection.astro';
+import ProjectImage from '~/components/project/ProjectImage.astro';
+
+import galleryImage from '../../media/projects/fokkelman/gallery.jpg';
+import viewerImage from '../../media/projects/fokkelman/viewer.jpg';
+
+<SubSection id="archive" label="The archive">
+  <ProjectImage src={galleryImage} alt="Fokkelman demo gallery — sample photos in justified rows, with a search box and a Favorites button" />
+
+A private vault for my family's digitized photographs, more than 3,600 of them. The gallery lays them out in rows that keep every photo's real proportions and draws them in batches as you scroll. Search and filters live in the URL, so any view can be shared. The screenshots show the public demo, which runs the same gallery on sample photos.
+
+</SubSection>
+
+<SubSection id="viewer" label="Up close">
+  <ProjectImage src={viewerImage} alt="Fokkelman photo viewer — a photo open full screen with a details panel beside it" />
+
+Open a photo and it fills the screen: zoom and pan by wheel, pinch or keyboard, swipe to the next one, with its neighbours already loaded. Each photo can carry a caption, a year and the people in it, and many photos can be edited at once.
+
+</SubSection>
+
+<SubSection id="behind-the-door" label="Behind the door">
+
+There is no database: Cloudinary is the only store, and captions and people live as metadata on each photo. The password is kept as a scrypt hash and a visit is a signed session cookie; five failed attempts lock a client out for fifteen minutes. More than 560 unit tests and 200 end-to-end tests run against a mock of Cloudinary, and accessibility checks fail the run on any violation.
+
+</SubSection>
