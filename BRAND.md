@@ -33,7 +33,7 @@ Cada proyecto tiene un acento que viaja a través de la sub-sección, los reveal
 | Token  | Hex       | Proyecto              | Tono                                    |
 | ------ | --------- | --------------------- | --------------------------------------- |
 | `--p1` | `#5b6cff` | Lore Master Assistant | Frío, eléctrico — flujo de información. |
-| `--p2` | `#ff7a3d` | Rule The Mando        | Cálido, retrogaming-but-modern.         |
+| `--p2` | `#2ec4b6` | Fokkelman             | Teal frío — mesa de luz, archivo.       |
 | `--p3` | `#d4a64a` | Kintsugi: The Fall    | Dorado kintsugi sobre lo roto.          |
 
 Reglas:

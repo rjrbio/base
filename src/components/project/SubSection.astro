@@ -99,6 +99,10 @@ const { id, label } = Astro.props;
     .subsection__content :global(p) {
       max-width: 38ch;
     }
+
+    .subsection__content :global(p:only-child) {
+      grid-column: 2;
+    }
   }
 
   .subsection__content :global(.asset-placeholder) {

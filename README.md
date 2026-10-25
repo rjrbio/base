@@ -9,7 +9,7 @@ Tres proyectos, cada uno con su propio acento cromático, dialecto visual de fon
 | #   | Proyecto                  | Qué es                                                                                                                              |
 | --- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | 1   | **Lore Master Assistant** | RAG fullstack de propósito general sobre MongoDB Atlas Vector Search. Ingiere URLs y archivos (TXT/MD/PDF/DOCX); responde con cita. |
-| 2   | **GonnaBe**               | Proyección realista de tu vida a partir de un perfil profundo (trabajo, finanzas, salud, relaciones), con escenarios alternativos.  |
+| 2   | **Fokkelman**             | Archivo privado, protegido con contraseña, de más de 3.600 fotos familiares digitalizadas, con visor, filtros y edición de datos.   |
 | 3   | **Kintsugi: The Fall**    | Videojuego JRPG por turnos con timing activo, en desarrollo.                                                                        |
 
 ## Stack

@@ -11,7 +11,7 @@ test.describe('Projects Showcase', () => {
 
   test('shows the three project headings', async ({ page }) => {
     await expect(page.getByRole('heading', { name: 'Lore Master Assistant' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'GonnaBe' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Fokkelman' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Kintsugi: The Fall' })).toBeVisible();
   });
 
@@ -41,9 +41,9 @@ test.describe('Projects Showcase', () => {
     await expect(page.locator('h2')).toHaveCount(4);
   });
 
-  test('renders 11 project images and 1 remaining placeholder for status', async ({ page }) => {
-    // Lore (3) + Mando (3) + Kintsugi (5) = 11 images integrated
-    await expect(page.locator('img.project-image')).toHaveCount(11);
+  test('renders 10 project images and 1 remaining placeholder for status', async ({ page }) => {
+    // Lore (3) + Fokkelman (2) + Kintsugi (5) = 10 images integrated
+    await expect(page.locator('img.project-image')).toHaveCount(10);
     // Only the Kintsugi "status" sub-section keeps the placeholder
     await expect(page.locator('.asset-placeholder')).toHaveCount(1);
   });
@@ -51,7 +51,7 @@ test.describe('Projects Showcase', () => {
   test('every project image carries a meaningful alt text', async ({ page }) => {
     const images = page.locator('img.project-image');
     const count = await images.count();
-    expect(count).toBe(11);
+    expect(count).toBe(10);
     for (let i = 0; i < count; i++) {
       const alt = await images.nth(i).getAttribute('alt');
       expect(alt, `image #${i} should have alt`).toBeTruthy();

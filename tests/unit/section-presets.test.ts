@@ -41,11 +41,26 @@ describe('computeTargetState', () => {
     expect(cta.fall).toBeLessThan(0.5);
   });
 
-  it('only lore flows and only gonna-be pulses', () => {
+  it('only lore flows and no section pulses (fokkelman settles instead)', () => {
     for (const id of SECTION_IDS) {
       const s = computeTargetState(id, 0.5);
       expect(s.flow).toBe(id === 'lore-master-assistant' ? 1 : 0);
-      expect(s.pulse).toBe(id === 'gonna-be' ? 1 : 0);
+      expect(s.pulse).toBe(0);
+    }
+  });
+
+  it('settles fokkelman: pieces scattered at the title, gathered by the time the body is read', () => {
+    expect(computeTargetState('fokkelman', 0).fall).toBeGreaterThan(0.5);
+    expect(computeTargetState('fokkelman', 0.4).fall).toBeCloseTo(0, 5);
+    expect(computeTargetState('fokkelman', 1).fall).toBe(0);
+
+    let previous = Infinity;
+    for (const lp of [0, 0.1, 0.2, 0.3, 0.4]) {
+      const { fall, drift } = computeTargetState('fokkelman', lp);
+      expect(fall).toBeLessThanOrEqual(previous);
+      // drift spins pieces with elapsed time, which would make the settle depend on how long the page has been open
+      expect(drift).toBe(0);
+      previous = fall;
     }
   });
 
